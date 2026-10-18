@@ -4,265 +4,517 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#08090d">
-  <title>Join TBO</title>
+  <meta name="theme-color" content="#08090c">
+  <title>TBO — Roblox Tools</title>
+  <meta name="description" content="TBO — Explore the next generation of Roblox tools.">
   <style>
-    * {
-      box-sizing: border-box;
+    :root {
+      --bg: #08090c;
+      --panel: #101116;
+      --border: #252630;
+      --muted: #9293a3;
+      --white: #f5f5f8;
+      --accent: #8170ff;
+      --blue: #5278ff;
     }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: #f5f6fa;
-      background:
-        radial-gradient(ellipse at 50% 0%, #17254b 0%, transparent 55%),
-        #08090d;
+      background: var(--bg);
+      color: var(--white);
+      font-family: Inter, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      line-height: 1.6;
     }
 
-    .card {
-      width: 100%;
-      max-width: 420px;
-      padding: 36px;
-      border: 1px solid #252936;
-      border-radius: 22px;
-      background: rgba(15, 17, 24, 0.94);
-      box-shadow: 0 25px 100px #0009, 0 0 50px #315bff0a;
+    a { color: inherit; text-decoration: none; }
+
+    .glow {
+      position: absolute;
+      width: 500px;
+      height: 350px;
+      top: -180px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #654bff;
+      opacity: .16;
+      filter: blur(120px);
+      pointer-events: none;
+    }
+
+    nav {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1120px;
+      margin: auto;
+      padding: 22px 26px;
+      border-bottom: 1px solid #ffffff0a;
     }
 
     .brand {
       display: flex;
-      justify-content: center;
-      margin-bottom: 28px;
+      align-items: center;
+      gap: 11px;
     }
 
     .brand img {
-      width: 110px;
-      height: 64px;
+      width: 38px;
+      height: 38px;
       object-fit: contain;
     }
 
-    h1 {
-      margin: 0 0 10px;
-      text-align: center;
-      font-size: 28px;
-      letter-spacing: -1px;
+    .brand-name {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 2px;
     }
 
-    .subtitle {
-      margin: 0 0 30px;
-      color: #9298a8;
-      text-align: center;
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    label {
-      display: block;
-      margin: 18px 0 9px;
-      color: #dfe2eb;
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      color: #a5a6b4;
       font-size: 13px;
-      font-weight: 600;
     }
 
-    input {
-      width: 100%;
-      padding: 14px 15px;
-      border: 1px solid #2a2e3a;
-      border-radius: 10px;
-      outline: none;
-      background: #0b0d13;
-      color: white;
-      font: inherit;
-      font-size: 14px;
-      transition: border-color .2s, box-shadow .2s;
+    .nav-links a:hover { color: white; }
+
+    .nav-button {
+      border: 1px solid #353344;
+      padding: 9px 15px;
+      border-radius: 9px;
+      color: white !important;
+      background: #ffffff06;
     }
 
-    input:focus {
-      border-color: #6684ff;
-      box-shadow: 0 0 0 3px #5876ff20;
-    }
-
-    input::placeholder {
-      color: #626878;
-    }
-
-    .password-wrap {
+    .hero {
       position: relative;
+      overflow: hidden;
+      text-align: center;
+      padding: 100px 22px 82px;
     }
 
-    .password-wrap input {
-      padding-right: 58px;
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border: 1px solid #343047;
+      border-radius: 100px;
+      color: #c1baff;
+      background: #8d78ff0d;
+      font-size: 11px;
+      letter-spacing: .6px;
     }
 
-    .toggle {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      border: 0;
-      background: transparent;
-      color: #969db0;
-      cursor: pointer;
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #9b8aff;
+      box-shadow: 0 0 10px #9b8aff;
+    }
+
+    .hero-logo {
+      display: block;
+      width: 145px;
+      height: 145px;
+      object-fit: contain;
+      margin: 32px auto 20px;
+      filter: drop-shadow(0 0 35px #7660ff25);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(48px, 9vw, 82px);
+      line-height: 1.06;
+      letter-spacing: -5px;
+      font-weight: 850;
+    }
+
+    .gradient {
+      color: #a89aff;
+      background: linear-gradient(100deg, #a99aff, #758dff 70%, #80d8ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      max-width: 510px;
+      margin: 22px auto 28px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 47px;
+      padding: 12px 22px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      transition: .2s ease;
+    }
+
+    .button:hover { transform: translateY(-2px); }
+
+    .primary {
+      border-color: transparent;
+      background: linear-gradient(110deg, #7160ed, #4d75ed);
+      box-shadow: 0 8px 30px #6758ff26;
+    }
+
+    .secondary {
+      background: #ffffff05;
+      color: #e0dfeb;
+    }
+
+    .fine-print {
+      margin-top: 16px;
+      color: #666875;
+      font-size: 11px;
+    }
+
+    section {
+      max-width: 1060px;
+      margin: auto;
+      padding: 68px 24px;
+    }
+
+    .section-head {
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      color: #a397ff;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 8px 0;
+      font-size: clamp(27px, 5vw, 38px);
+      letter-spacing: -1.3px;
+    }
+
+    .section-desc {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    .feature {
+      padding: 25px 22px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: linear-gradient(145deg, #12131a, #0c0d12);
+      transition: border-color .2s, transform .2s;
+    }
+
+    .feature:hover {
+      border-color: #514879;
+      transform: translateY(-3px);
+    }
+
+    .feature-icon {
+      display: grid;
+      place-items: center;
+      width: 39px;
+      height: 39px;
+      margin-bottom: 20px;
+      border: 1px solid #39334f;
+      border-radius: 11px;
+      background: #8d79ff12;
+      color: #b7aaff;
+      font-size: 19px;
+    }
+
+    .feature h3 {
+      margin: 0 0 8px;
+      font-size: 15px;
+    }
+
+    .feature p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    .download-card {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 24px;
+      padding: 32px;
+      border: 1px solid #37314f;
+      border-radius: 17px;
+      background:
+        radial-gradient(ellipse at 100% 0%, #7863ff16, transparent 50%),
+        #101116;
+    }
+
+    .download-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .download-title img {
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+    }
+
+    .download-title h3 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .download-title p {
+      margin: 3px 0 0;
+      color: var(--muted);
       font-size: 12px;
     }
 
-    .submit {
-      width: 100%;
-      margin-top: 26px;
-      padding: 15px;
-      border: 0;
-      border-radius: 10px;
-      color: white;
-      background: linear-gradient(110deg, #4169ff, #7453ee);
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 7px 25px #4e5dff30;
-      transition: transform .2s, filter .2s;
+    .download-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 23px;
     }
 
-    .submit:hover {
-      transform: translateY(-2px);
-      filter: brightness(1.13);
-    }
-
-    .submit:active {
-      transform: scale(.99);
-    }
-
-    .terms {
-      margin: 17px 0 0;
-      color: #777e8e;
+    .tag {
+      padding: 6px 10px;
+      border: 1px solid #2b2c36;
+      border-radius: 7px;
+      color: #a9aab9;
       font-size: 11px;
-      text-align: center;
-      line-height: 1.7;
     }
 
-    .terms a, .signin a {
-      color: #8ca2ff;
-      text-decoration: none;
-    }
-
-    .signin {
-      margin: 25px 0 0;
-      padding-top: 22px;
-      border-top: 1px solid #252936;
-      color: #9298a8;
-      text-align: center;
-      font-size: 13px;
-    }
-
-    .signin a {
-      margin-left: 4px;
-      font-weight: 600;
-    }
-
-    .message {
-      display: none;
-      margin-top: 16px;
-      color: #ffb4b4;
-      font-size: 13px;
-      line-height: 1.5;
+    .download-action {
       text-align: center;
     }
 
-    @media (max-width: 480px) {
-      body {
-        padding: 16px;
-      }
+    .download-action .button {
+      min-width: 155px;
+    }
 
-      .card {
-        padding: 28px 22px;
-      }
+    .download-action small {
+      display: block;
+      margin-top: 10px;
+      color: #777989;
+      font-size: 10px;
+    }
 
-      h1 {
-        font-size: 25px;
-      }
+    .notice {
+      margin-top: 18px;
+      padding: 15px 17px;
+      border: 1px solid #2a2937;
+      border-radius: 10px;
+      color: #9293a3;
+      background: #ffffff03;
+      font-size: 12px;
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      max-width: 1120px;
+      margin: 25px auto 0;
+      padding: 25px;
+      border-top: 1px solid #ffffff0c;
+      color: #777989;
+      font-size: 11px;
+    }
+
+    footer img {
+      width: 78px;
+      max-height: 35px;
+      object-fit: contain;
+    }
+
+    @media (max-width: 700px) {
+      nav { padding: 17px 19px; }
+      .nav-links { gap: 15px; }
+      .nav-links .hide-mobile { display: none; }
+      .hero { padding: 75px 20px 55px; }
+      h1 { letter-spacing: -2.5px; }
+      .hero-logo { width: 120px; height: 120px; }
+      section { padding: 48px 19px; }
+      .features { grid-template-columns: 1fr; }
+      .feature { padding: 22px; }
+      .download-card { grid-template-columns: 1fr; padding: 23px; }
+      .download-action { text-align: left; }
+      .download-action .button { width: 100%; }
+      footer { padding: 22px 19px; }
     }
   </style>
 </head>
 <body>
-  <main class="card">
-    <div class="brand">
-      <img src="./logohs.svg" alt="TBO">
+  <div class="glow"></div>
+
+  <nav>
+    <a class="brand" href="#">
+      <img src="./logok.svg" alt="TBO">
+      <span class="brand-name">TBO</span>
+    </a>
+    <div class="nav-links">
+      <a class="hide-mobile" href="#features">Features</a>
+      <a href="#download">Download</a>
+      <a class="nav-button" href="#download">Get TBO ↗</a>
     </div>
+  </nav>
 
-    <h1>Create your account</h1>
-    <p class="subtitle">
-      Your next chapter starts here.<br>
-      Join TBO today.
-    </p>
-
-    <form id="signup">
-      <label for="email">Email address</label>
-      <input
-        id="email"
-        name="email"
-        type="email"
-        placeholder="you@example.com"
-        autocomplete="email"
-        required
-      >
-
-      <label for="password">Password</label>
-      <div class="password-wrap">
-        <input
-          id="password"
-          name="password"
-          type="password"
-          placeholder="At least 8 characters"
-          minlength="8"
-          autocomplete="new-password"
-          required
-        >
-        <button class="toggle" type="button" id="toggle">
-          Show
-        </button>
+  <main>
+    <header class="hero">
+      <div class="status">
+        <span class="dot"></span>
+        INTRODUCING TBO
       </div>
 
-      <button class="submit" type="submit">
-        Create account &nbsp; →
-      </button>
+      <img class="hero-logo" src="./logok.svg" alt="TBO Logo">
 
-      <p class="message" id="message"></p>
-    </form>
+      <h1>Meet <span class="gradient">TBO.</span></h1>
+      <p>
+        A new destination for your Roblox experience.
+        Explore TBO, discover its features, and stay up to date.
+      </p>
 
-    <p class="terms">
-      By continuing, you agree to our
-      <a href="./terms.html">Terms of Service</a>
-      and <a href="./privacy.html">Privacy Policy</a>.
-    </p>
+      <div class="actions">
+        <a class="button primary" href="#download">
+          Explore downloads <span>↓</span>
+        </a>
+        <a class="button secondary" href="#features">
+          Discover features
+        </a>
+      </div>
 
-    <p class="signin">
-      Already have an account?
-      <a href="./login.html">Sign in</a>
-    </p>
+      <div class="fine-print">
+        Check compatibility and safety information before installing any software.
+      </div>
+    </header>
+
+    <section id="features">
+      <div class="section-head">
+        <div class="eyebrow">Built around your experience</div>
+        <h2>Why TBO?</h2>
+        <p class="section-desc">
+          A clean, modern home for TBO updates and releases.
+        </p>
+      </div>
+
+      <div class="features">
+        <article class="feature">
+          <div class="feature-icon">✦</div>
+          <h3>Clean experience</h3>
+          <p>
+            A simple interface designed to make information
+            and available releases easy to find.
+          </p>
+        </article>
+
+        <article class="feature">
+          <div class="feature-icon">↻</div>
+          <h3>Release updates</h3>
+          <p>
+            Keep track of published versions and check
+            release notes before downloading.
+          </p>
+        </article>
+
+        <article class="feature">
+          <div class="feature-icon">⌘</div>
+          <h3>Compatibility info</h3>
+          <p>
+            Find platform requirements and installation
+            information alongside each release.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="download">
+      <div class="section-head">
+        <div class="eyebrow">Get started</div>
+        <h2>Downloads</h2>
+        <p class="section-desc">
+          Find the release and platform information you need.
+        </p>
+      </div>
+
+      <div class="download-card">
+        <div>
+          <div class="download-title">
+            <img src="./logok.svg" alt="">
+            <div>
+              <h3>TBO</h3>
+              <p>Official release page</p>
+            </div>
+          </div>
+          <div class="download-meta">
+            <span class="tag">Version: Not announced</span>
+            <span class="tag">Platform: Not specified</span>
+            <span class="tag">Release: Unpublished</span>
+          </div>
+        </div>
+
+        <div class="download-action">
+          <a class="button primary" href="#release-info">
+            View release info ↗
+          </a>
+          <small>Download link not configured</small>
+        </div>
+      </div>
+
+      <div class="notice" id="release-info">
+        <strong>Release information</strong><br>
+        Official version details and a verified download link
+        will appear here once configured.
+      </div>
+    </section>
   </main>
 
+  <footer>
+    <img src="./logohs.svg" alt="TBO">
+    <span>© <span id="year"></span> TBO. All rights reserved.</span>
+    <a href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">
+      Back to top ↑
+    </a>
+  </footer>
+
   <script>
-    const password = document.getElementById("password");
-    const toggle = document.getElementById("toggle");
-    const form = document.getElementById("signup");
-    const message = document.getElementById("message");
-
-    toggle.addEventListener("click", () => {
-      const hidden = password.type === "password";
-      password.type = hidden ? "text" : "password";
-      toggle.textContent = hidden ? "Hide" : "Show";
-    });
-
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      message.style.display = "block";
-      message.textContent =
-        "The signup service isn't connected yet. Please try again later.";
-    });
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
   </script>
 </body>
 </html>
