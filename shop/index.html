@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#09090e">
+  <meta name="description" content="Explore upcoming TBO features and ad-free access.">
+  <title>Shop — TBO</title>
+  <style>
+    :root {
+      --bg:#09090e;--surface:#111119;--text:#f5f4fb;
+      --muted:#a09fb4;--border:rgba(255,255,255,.09)
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:radial-gradient(ellipse at 50% -15%,rgba(111,67,213,.2),transparent 45%),var(--bg);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6;min-height:100vh}
+    a{color:inherit;text-decoration:none}
+    nav{height:76px;display:flex;align-items:center;justify-content:space-between;width:min(1180px,calc(100% - 40px));margin:auto}
+    .brand{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800;letter-spacing:-.7px}
+    .brand img{width:35px;height:35px;object-fit:contain}
+    .back{padding:10px 15px;border:1px solid var(--border);border-radius:11px;color:#e5e1f5;font-size:13px}
+    .back:hover{background:rgba(255,255,255,.06)}
+    .container{width:min(960px,calc(100% - 40px));margin:auto}
+    .hero{text-align:center;padding:90px 15px 55px}
+    .eyebrow{color:#ad91ff;font-size:11px;font-weight:800;letter-spacing:2.4px;text-transform:uppercase}
+    h1{font-size:clamp(42px,7vw,68px);letter-spacing:-3px;line-height:1.12;margin-top:12px}
+    .gradient{background:linear-gradient(100deg,#b69aff,#8c78ff 45%,#68a1ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .intro{max-width:570px;margin:20px auto 0;color:var(--muted);font-size:16px}
+    .notice{display:inline-flex;margin-top:24px;padding:8px 13px;border:1px solid rgba(155,112,255,.25);border-radius:9px;background:rgba(155,112,255,.08);color:#c7b4ff;font-size:12px;font-weight:700}
+    .products{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;padding:25px 0 90px}
+    .card{display:flex;flex-direction:column;min-height:280px;padding:27px;border:1px solid var(--border);border-radius:19px;background:radial-gradient(ellipse at 100% 0%,rgba(123,91,231,.13),transparent 55%),var(--surface)}
+    .icon{display:grid;place-items:center;width:48px;height:48px;border:1px solid rgba(155,112,255,.2);background:rgba(155,112,255,.1);border-radius:14px;font-size:22px}
+    .status{align-self:flex-start;margin-top:20px;padding:5px 9px;border:1px solid rgba(155,112,255,.25);border-radius:7px;background:rgba(155,112,255,.09);color:#c3adff;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+    h2{font-size:22px;margin-top:13px}
+    .card p{color:var(--muted);font-size:14px;margin-top:8px;flex:1}
+    .disabled{display:inline-flex;align-self:flex-start;margin-top:24px;padding:11px 16px;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,.035);color:#aaa6bd;font-size:13px;font-weight:700}
+    .bottom-note{text-align:center;padding:25px 0 55px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+    footer{width:min(960px,calc(100% - 40px));margin:auto;padding:25px 0 30px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:15px;color:#77758a;font-size:12px}
+    .footer-brand{display:flex;align-items:center;gap:9px}
+    .footer-brand img{width:27px;height:27px;object-fit:contain}
+    @media(max-width:650px){.hero{padding-top:70px}.products{grid-template-columns:1fr;padding-bottom:60px}.card{min-height:255px}h1{letter-spacing:-2px}footer{align-items:flex-start}}
+  </style>
+</head>
+<body>
+  <nav>
+    <a class="brand" href="../" aria-label="TBO home">
+      <img src="../logok.svg" alt="">
+      <span>TBO</span>
+    </a>
+    <a class="back" href="../">← Back to home</a>
+  </nav>
+
+  <main class="container">
+    <header class="hero">
+      <div class="eyebrow">The TBO shop</div>
+      <h1>More features.<br><span class="gradient">Your way.</span></h1>
+      <p class="intro">
+        Explore upcoming ways to customize your TBO experience,
+        with advanced features and the possibility of ad-free access.
+      </p>
+      <div class="notice">SHOP OPENING SOON</div>
+    </header>
+
+    <section class="products" aria-label="Upcoming shop offerings">
+      <article class="card">
+        <div class="icon" aria-hidden="true">✦</div>
+        <span class="status">Coming soon</span>
+        <h2>Advanced features</h2>
+        <p>
+          Discover additional features designed for users who want more from TBO.
+          Available features and details will be announced later.
+        </p>
+        <span class="disabled">Not available yet</span>
+      </article>
+
+      <article class="card">
+        <div class="icon" aria-hidden="true">◇</div>
+        <span class="status">Coming soon</span>
+        <h2>Ad-free experience</h2>
+        <p>
+          An option for users who prefer using TBO without ads.
+          Availability and details have not been announced.
+        </p>
+        <span class="disabled">Not available yet</span>
+      </article>
+    </section>
+
+    <div class="bottom-note">
+      Nothing is available to purchase yet. Check back for future announcements.
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-brand">
+      <img src="../logohs.svg" alt="TBO">
+      <span>© <span id="year"></span> TBO</span>
+    </div>
+    <span>Not affiliated with Roblox Corporation.</span>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
