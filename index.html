@@ -1,520 +1,1059 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#08090c">
-  <title>TBO — Roblox Tools</title>
-  <meta name="description" content="TBO — Explore the next generation of Roblox tools.">
+  <meta name="theme-color" content="#09090e">
+  <meta name="description" content="TBO — Explore the next level of your Roblox mobile experience.">
+  <title>TBO — More with TBO</title>
+
   <style>
     :root {
-      --bg: #08090c;
-      --panel: #101116;
-      --border: #252630;
-      --muted: #9293a3;
-      --white: #f5f5f8;
-      --accent: #8170ff;
-      --blue: #5278ff;
+      --bg: #09090e;
+      --surface: #111119;
+      --surface-light: #171722;
+      --text: #f5f4fb;
+      --muted: #a09fb4;
+      --purple: #9b70ff;
+      --blue: #638aff;
+      --border: rgba(255,255,255,.09);
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 90px;
+    }
 
     body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--white);
-      font-family: Inter, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", sans-serif;
+      background:
+        radial-gradient(ellipse at 50% -15%, rgba(111,67,213,.20), transparent 45%),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       line-height: 1.6;
+      min-height: 100vh;
     }
 
-    a { color: inherit; text-decoration: none; }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-    .glow {
-      position: absolute;
-      width: 500px;
-      height: 350px;
-      top: -180px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #654bff;
-      opacity: .16;
-      filter: blur(120px);
-      pointer-events: none;
+    button {
+      font: inherit;
+    }
+
+    .container {
+      width: min(1080px, calc(100% - 40px));
+      margin: 0 auto;
     }
 
     nav {
-      position: relative;
-      z-index: 2;
+      height: 76px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      max-width: 1120px;
-      margin: auto;
-      padding: 22px 26px;
-      border-bottom: 1px solid #ffffff0a;
+      gap: 20px;
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+      position: relative;
+      z-index: 10;
     }
 
     .brand {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 11px;
+      gap: 10px;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -.7px;
     }
 
     .brand img {
-      width: 38px;
-      height: 38px;
+      width: 35px;
+      height: 35px;
       object-fit: contain;
     }
 
-    .brand-name {
-      font-size: 17px;
-      font-weight: 800;
-      letter-spacing: 2px;
+    .menu-wrap {
+      position: relative;
     }
 
-    .nav-links {
+    .menu-button {
       display: flex;
       align-items: center;
-      gap: 28px;
-      color: #a5a6b4;
-      font-size: 13px;
+      gap: 10px;
+      padding: 10px 15px;
+      color: var(--text);
+      background: rgba(255,255,255,.045);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background .2s;
     }
 
-    .nav-links a:hover { color: white; }
+    .menu-button:hover {
+      background: rgba(255,255,255,.09);
+    }
 
-    .nav-button {
-      border: 1px solid #353344;
-      padding: 9px 15px;
+    .menu-icon {
+      width: 17px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .menu-icon span {
+      height: 2px;
+      border-radius: 2px;
+      background: currentColor;
+    }
+
+    .dropdown {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: calc(100% + 10px);
+      width: 210px;
+      padding: 7px;
+      border: 1px solid var(--border);
+      background: #12121b;
+      border-radius: 15px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.45);
+    }
+
+    .dropdown.open {
+      display: block;
+      animation: appear .16s ease-out;
+    }
+
+    .dropdown a {
+      display: block;
+      padding: 10px 12px;
+      color: #d7d5e5;
+      font-size: 14px;
       border-radius: 9px;
-      color: white !important;
-      background: #ffffff06;
+      transition: background .2s, color .2s;
+    }
+
+    .dropdown a:hover {
+      background: rgba(155,112,255,.13);
+      color: white;
+    }
+
+    .dropdown .menu-divider {
+      height: 1px;
+      margin: 5px 7px;
+      background: var(--border);
+    }
+
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .hero {
-      position: relative;
-      overflow: hidden;
-      text-align: center;
-      padding: 100px 22px 82px;
-    }
-
-    .status {
-      display: inline-flex;
+      min-height: 590px;
+      padding: 95px 20px 105px;
+      display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 8px;
-      padding: 7px 12px;
-      border: 1px solid #343047;
-      border-radius: 100px;
-      color: #c1baff;
-      background: #8d78ff0d;
-      font-size: 11px;
-      letter-spacing: .6px;
-    }
-
-    .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #9b8aff;
-      box-shadow: 0 0 10px #9b8aff;
+      justify-content: center;
+      text-align: center;
     }
 
     .hero-logo {
-      display: block;
-      width: 145px;
-      height: 145px;
+      width: 100px;
+      height: 100px;
       object-fit: contain;
-      margin: 32px auto 20px;
-      filter: drop-shadow(0 0 35px #7660ff25);
+      margin-bottom: 24px;
+      filter: drop-shadow(0 0 35px rgba(143,93,255,.19));
     }
 
     h1 {
-      margin: 0;
-      font-size: clamp(48px, 9vw, 82px);
-      line-height: 1.06;
-      letter-spacing: -5px;
+      font-size: clamp(43px, 7vw, 76px);
+      line-height: 1.08;
+      letter-spacing: -4px;
       font-weight: 850;
     }
 
     .gradient {
-      color: #a89aff;
-      background: linear-gradient(100deg, #a99aff, #758dff 70%, #80d8ff);
+      background: linear-gradient(100deg, #b69aff, #8c78ff 45%, #68a1ff);
       -webkit-background-clip: text;
       background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: transparent;
     }
 
     .hero p {
-      max-width: 510px;
-      margin: 22px auto 28px;
+      max-width: 570px;
+      margin: 23px auto 0;
       color: var(--muted);
-      font-size: 15px;
+      font-size: 17px;
     }
 
     .actions {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-    }
-
-    .button {
-      display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 9px;
       min-height: 47px;
-      padding: 12px 22px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      font-size: 13px;
+      padding: 12px 21px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      font-size: 14px;
       font-weight: 700;
-      transition: .2s ease;
+      cursor: pointer;
+      transition: transform .2s, background .2s, border-color .2s;
     }
 
-    .button:hover { transform: translateY(-2px); }
-
-    .primary {
-      border-color: transparent;
-      background: linear-gradient(110deg, #7160ed, #4d75ed);
-      box-shadow: 0 8px 30px #6758ff26;
+    .btn:hover {
+      transform: translateY(-2px);
     }
 
-    .secondary {
-      background: #ffffff05;
-      color: #e0dfeb;
+    .btn.primary {
+      color: white;
+      background: linear-gradient(110deg, #8b65f6, #627dff);
+      box-shadow: 0 7px 28px rgba(115,91,245,.18);
     }
 
-    .fine-print {
-      margin-top: 16px;
-      color: #666875;
-      font-size: 11px;
+    .btn.primary:hover {
+      box-shadow: 0 10px 34px rgba(115,91,245,.3);
+    }
+
+    .btn.secondary {
+      background: rgba(255,255,255,.045);
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    .btn.secondary:hover {
+      background: rgba(255,255,255,.09);
+    }
+
+    .note-top {
+      margin-top: 22px;
+      font-size: 12px;
+      color: #89879e;
+      letter-spacing: .2px;
     }
 
     section {
-      max-width: 1060px;
-      margin: auto;
-      padding: 68px 24px;
+      padding: 80px 0;
     }
 
-    .section-head {
-      margin-bottom: 28px;
+    .section-heading {
+      text-align: center;
+      margin-bottom: 36px;
     }
 
     .eyebrow {
-      color: #a397ff;
+      color: #ad91ff;
       font-size: 11px;
       font-weight: 800;
-      letter-spacing: 2px;
+      letter-spacing: 2.4px;
       text-transform: uppercase;
     }
 
     h2 {
-      margin: 8px 0;
-      font-size: clamp(27px, 5vw, 38px);
-      letter-spacing: -1.3px;
+      font-size: clamp(29px, 4vw, 42px);
+      letter-spacing: -1.5px;
+      line-height: 1.2;
+      margin-top: 10px;
     }
 
-    .section-desc {
-      margin: 0;
+    .section-description {
+      max-width: 560px;
+      margin: 13px auto 0;
       color: var(--muted);
-      font-size: 14px;
+      font-size: 15px;
     }
 
-    .features {
+    .download-panel {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 30px;
+      background: linear-gradient(145deg, rgba(155,112,255,.08), rgba(99,138,255,.025));
+      border: 1px solid var(--border);
+      border-radius: 22px;
+    }
+
+    .platforms {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 15px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 22px;
     }
 
-    .feature {
-      padding: 25px 22px;
+    .platform {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 17px;
+      color: var(--text);
+      text-align: left;
+      background: rgba(255,255,255,.025);
       border: 1px solid var(--border);
       border-radius: 14px;
-      background: linear-gradient(145deg, #12131a, #0c0d12);
-      transition: border-color .2s, transform .2s;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
     }
 
-    .feature:hover {
-      border-color: #514879;
-      transform: translateY(-3px);
+    .platform:hover,
+    .platform.active {
+      border-color: rgba(155,112,255,.7);
+      background: rgba(155,112,255,.09);
+    }
+
+    .platform-symbol {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      flex-shrink: 0;
+      background: rgba(255,255,255,.06);
+      border-radius: 12px;
+      font-size: 21px;
+    }
+
+    .platform strong {
+      display: block;
+      font-size: 15px;
+    }
+
+    .platform small {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .download-status {
+      text-align: center;
+      padding: 22px 15px 5px;
+      border-top: 1px solid var(--border);
+    }
+
+    .download-status strong {
+      display: block;
+      font-size: 17px;
+    }
+
+    .download-status p {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 5px 0 16px;
+    }
+
+    .download-status .btn {
+      min-width: 180px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 17px;
+    }
+
+    .feature-card {
+      padding: 25px;
+      border: 1px solid var(--border);
+      background: linear-gradient(145deg, rgba(255,255,255,.035), rgba(255,255,255,.012));
+      border-radius: 18px;
+      transition: transform .2s, border-color .2s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(155,112,255,.35);
     }
 
     .feature-icon {
       display: grid;
       place-items: center;
-      width: 39px;
-      height: 39px;
-      margin-bottom: 20px;
-      border: 1px solid #39334f;
-      border-radius: 11px;
-      background: #8d79ff12;
-      color: #b7aaff;
-      font-size: 19px;
+      width: 45px;
+      height: 45px;
+      margin-bottom: 19px;
+      border: 1px solid rgba(155,112,255,.18);
+      background: rgba(155,112,255,.10);
+      border-radius: 13px;
+      font-size: 21px;
     }
 
-    .feature h3 {
-      margin: 0 0 8px;
+    .feature-card h3 {
+      font-size: 17px;
+      margin-bottom: 8px;
+    }
+
+    .feature-card p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .shop-section {
+      padding-top: 45px;
+    }
+
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 17px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .shop-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 250px;
+      padding: 26px;
+      overflow: hidden;
+      border: 1px solid rgba(155,112,255,.22);
+      border-radius: 19px;
+      background:
+        radial-gradient(ellipse at 100% 0%, rgba(123,91,231,.15), transparent 55%),
+        var(--surface);
+    }
+
+    .shop-card h3 {
+      font-size: 20px;
+      margin: 15px 0 8px;
+    }
+
+    .shop-card p {
+      color: var(--muted);
+      font-size: 14px;
+      flex: 1;
+    }
+
+    .shop-card .btn {
+      margin-top: 22px;
+      align-self: flex-start;
+    }
+
+    .coming-badge {
+      display: inline-flex;
+      align-self: flex-start;
+      padding: 5px 9px;
+      border: 1px solid rgba(155,112,255,.25);
+      border-radius: 7px;
+      background: rgba(155,112,255,.09);
+      color: #c3adff;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .promise {
+      padding: 55px 25px;
+      text-align: center;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(116,78,225,.13), transparent 70%),
+        var(--surface);
+    }
+
+    .promise h2 {
+      margin-top: 0;
+    }
+
+    .promise p {
+      max-width: 650px;
+      margin: 15px auto 0;
+      color: var(--muted);
       font-size: 15px;
     }
 
-    .feature p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.8;
-    }
-
-    .download-card {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      gap: 24px;
-      padding: 32px;
-      border: 1px solid #37314f;
-      border-radius: 17px;
-      background:
-        radial-gradient(ellipse at 100% 0%, #7863ff16, transparent 50%),
-        #101116;
-    }
-
-    .download-title {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .download-title img {
-      width: 52px;
-      height: 52px;
-      object-fit: contain;
-    }
-
-    .download-title h3 {
-      margin: 0;
-      font-size: 20px;
-    }
-
-    .download-title p {
-      margin: 3px 0 0;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .download-meta {
+    .promise-points {
       display: flex;
       flex-wrap: wrap;
-      gap: 9px;
-      margin-top: 23px;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 24px;
     }
 
-    .tag {
-      padding: 6px 10px;
-      border: 1px solid #2b2c36;
-      border-radius: 7px;
-      color: #a9aab9;
-      font-size: 11px;
-    }
-
-    .download-action {
-      text-align: center;
-    }
-
-    .download-action .button {
-      min-width: 155px;
-    }
-
-    .download-action small {
-      display: block;
-      margin-top: 10px;
-      color: #777989;
-      font-size: 10px;
-    }
-
-    .notice {
-      margin-top: 18px;
-      padding: 15px 17px;
-      border: 1px solid #2a2937;
-      border-radius: 10px;
-      color: #9293a3;
-      background: #ffffff03;
+    .promise-points span {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: rgba(255,255,255,.035);
       font-size: 12px;
+      color: #d6d3e5;
+    }
+
+    .faq-list {
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    details {
+      border-bottom: 1px solid var(--border);
+    }
+
+    details:first-child {
+      border-top: 1px solid var(--border);
+    }
+
+    summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 19px 3px;
+      cursor: pointer;
+      list-style: none;
+      font-weight: 650;
+      font-size: 15px;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::after {
+      content: "+";
+      color: #b49aff;
+      font-size: 22px;
+      font-weight: 400;
+      transition: transform .2s;
+    }
+
+    details[open] summary::after {
+      content: "−";
+    }
+
+    .faq-answer {
+      padding: 0 25px 20px 3px;
+      color: var(--muted);
+      font-size: 14px;
     }
 
     footer {
+      width: min(1080px, calc(100% - 40px));
+      margin: 30px auto 0;
+      padding: 30px 0 25px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 20px;
-      max-width: 1120px;
-      margin: 25px auto 0;
-      padding: 25px;
-      border-top: 1px solid #ffffff0c;
-      color: #777989;
-      font-size: 11px;
+      border-top: 1px solid var(--border);
     }
 
-    footer img {
-      width: 78px;
-      max-height: 35px;
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .footer-brand img {
+      width: 28px;
+      height: 28px;
       object-fit: contain;
     }
 
+    .footer-right {
+      color: #77758a;
+      font-size: 12px;
+      text-align: right;
+    }
+
     @media (max-width: 700px) {
-      nav { padding: 17px 19px; }
-      .nav-links { gap: 15px; }
-      .nav-links .hide-mobile { display: none; }
-      .hero { padding: 75px 20px 55px; }
-      h1 { letter-spacing: -2.5px; }
-      .hero-logo { width: 120px; height: 120px; }
-      section { padding: 48px 19px; }
-      .features { grid-template-columns: 1fr; }
-      .feature { padding: 22px; }
-      .download-card { grid-template-columns: 1fr; padding: 23px; }
-      .download-action { text-align: left; }
-      .download-action .button { width: 100%; }
-      footer { padding: 22px 19px; }
+      .hero {
+        min-height: 530px;
+        padding: 75px 15px 80px;
+      }
+
+      h1 {
+        letter-spacing: -2.5px;
+      }
+
+      .hero p {
+        font-size: 15px;
+      }
+
+      section {
+        padding: 62px 0;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .feature-card {
+        padding: 22px;
+      }
+
+      .download-panel {
+        padding: 18px;
+      }
+
+      .platforms {
+        gap: 9px;
+      }
+
+      .platform {
+        padding: 12px;
+        gap: 9px;
+      }
+
+      .platform-symbol {
+        width: 34px;
+        height: 34px;
+        font-size: 18px;
+      }
+
+      .platform strong {
+        font-size: 13px;
+      }
+
+      .platform small {
+        font-size: 11px;
+      }
+
+      .shop-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .promise {
+        padding: 35px 20px;
+      }
+
+      footer {
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .container,
+      nav,
+      footer {
+        width: calc(100% - 28px);
+      }
+
+      .actions {
+        width: 100%;
+      }
+
+      .actions .btn {
+        flex: 1;
+        padding: 11px 13px;
+      }
+
+      .platforms {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
     }
   </style>
 </head>
-<body>
-  <div class="glow"></div>
 
+<body>
   <nav>
-    <a class="brand" href="#">
-      <img src="./logok.svg" alt="TBO">
-      <span class="brand-name">TBO</span>
+    <a class="brand" href="#" aria-label="TBO home">
+      <img src="./logok.svg" alt="">
+      <span>TBO</span>
     </a>
-    <div class="nav-links">
-      <a class="hide-mobile" href="#features">Features</a>
-      <a href="#download">Download</a>
-      <a class="nav-button" href="#download">Get TBO ↗</a>
+
+    <div class="menu-wrap">
+      <button
+        class="menu-button"
+        id="menu-button"
+        aria-expanded="false"
+        aria-controls="dropdown"
+        type="button"
+      >
+        <span class="menu-icon" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </span>
+        Menu
+      </button>
+
+      <div class="dropdown" id="dropdown">
+        <a href="#download" data-platform-link="ios">iOS</a>
+        <a href="#download" data-platform-link="android">Android</a>
+        <div class="menu-divider"></div>
+        <a href="#shop">Shop</a>
+        <a href="#features">Features</a>
+        <a href="#faq">FAQ</a>
+        <div class="menu-divider"></div>
+        <a href="#" class="placeholder-link">Telegram</a>
+        <a href="#" class="placeholder-link">Discord</a>
+      </div>
     </div>
   </nav>
 
+  <header class="hero">
+    <img class="hero-logo" src="./logok.svg" alt="TBO logo">
+
+    <h1>More with <span class="gradient">TBO.</span></h1>
+
+    <p>
+      A new destination for your Roblox mobile experience.
+      Choose your platform and explore what TBO has to offer.
+    </p>
+
+    <div class="actions">
+      <a class="btn secondary" href="#features">Explore more <span aria-hidden="true">↗</span></a>
+      <a class="btn primary" href="#download">Download <span aria-hidden="true">↓</span></a>
+    </div>
+
+    <div class="note-top">
+      No key system · No subscriptions planned · More to come
+    </div>
+  </header>
+
   <main>
-    <header class="hero">
-      <div class="status">
-        <span class="dot"></span>
-        INTRODUCING TBO
-      </div>
-
-      <img class="hero-logo" src="./logok.svg" alt="TBO Logo">
-
-      <h1>Meet <span class="gradient">TBO.</span></h1>
-      <p>
-        A new destination for your Roblox experience.
-        Explore TBO, discover its features, and stay up to date.
-      </p>
-
-      <div class="actions">
-        <a class="button primary" href="#download">
-          Explore downloads <span>↓</span>
-        </a>
-        <a class="button secondary" href="#features">
-          Discover features
-        </a>
-      </div>
-
-      <div class="fine-print">
-        Check compatibility and safety information before installing any software.
-      </div>
-    </header>
-
-    <section id="features">
-      <div class="section-head">
-        <div class="eyebrow">Built around your experience</div>
-        <h2>Why TBO?</h2>
-        <p class="section-desc">
-          A clean, modern home for TBO updates and releases.
-        </p>
-      </div>
-
-      <div class="features">
-        <article class="feature">
-          <div class="feature-icon">✦</div>
-          <h3>Clean experience</h3>
-          <p>
-            A simple interface designed to make information
-            and available releases easy to find.
+    <section id="download">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">Get started</div>
+          <h2>Choose your platform.</h2>
+          <p class="section-description">
+            Select your device to see the latest download information for TBO.
           </p>
-        </article>
+        </div>
 
-        <article class="feature">
-          <div class="feature-icon">↻</div>
-          <h3>Release updates</h3>
-          <p>
-            Keep track of published versions and check
-            release notes before downloading.
-          </p>
-        </article>
+        <div class="download-panel">
+          <div class="platforms">
+            <button class="platform" id="ios-tab" data-platform="ios" type="button">
+              <span class="platform-symbol" aria-hidden="true"></span>
+              <span>
+                <strong>iOS</strong>
+                <small>iPhone and iPad</small>
+              </span>
+            </button>
 
-        <article class="feature">
-          <div class="feature-icon">⌘</div>
-          <h3>Compatibility info</h3>
-          <p>
-            Find platform requirements and installation
-            information alongside each release.
-          </p>
-        </article>
+            <button class="platform" id="android-tab" data-platform="android" type="button">
+              <span class="platform-symbol" aria-hidden="true">◈</span>
+              <span>
+                <strong>Android</strong>
+                <small>Android devices</small>
+              </span>
+            </button>
+          </div>
+
+          <div class="download-status" aria-live="polite">
+            <strong id="download-title">TBO for iOS</strong>
+            <p id="download-description">
+              The iOS download isn't available yet. Check back for updates.
+            </p>
+            <a class="btn primary" id="download-button" href="#download">Coming soon</a>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section id="download">
-      <div class="section-head">
-        <div class="eyebrow">Get started</div>
-        <h2>Downloads</h2>
-        <p class="section-desc">
-          Find the release and platform information you need.
-        </p>
-      </div>
+    <section id="features">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">Why TBO</div>
+          <h2>Made with you in mind.</h2>
+          <p class="section-description">
+            Our focus is a straightforward experience, helpful support, and clear information.
+          </p>
+        </div>
 
-      <div class="download-card">
-        <div>
-          <div class="download-title">
-            <img src="./logok.svg" alt="">
-            <div>
-              <h3>TBO</h3>
-              <p>Official release page</p>
+        <div class="cards">
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">⚡</div>
+            <h3>Fast updates</h3>
+            <p>
+              Stay informed about new releases and important changes as TBO develops.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">◉</div>
+            <h3>24/7 support</h3>
+            <p>
+              Find helpful information and support resources when you need assistance.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">◇</div>
+            <h3>Security-minded</h3>
+            <p>
+              We aim to make safety a priority and provide clear information about using TBO.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="shop" class="shop-section">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">The TBO shop</div>
+          <h2>Make it yours.</h2>
+          <p class="section-description">
+            Explore plans for enhanced features and an ad-free experience.
+            The shop isn't open yet.
+          </p>
+        </div>
+
+        <div class="shop-grid">
+          <article class="shop-card">
+            <span class="coming-badge">Coming soon</span>
+            <h3>Advanced features</h3>
+            <p>
+              Get more out of TBO with additional features designed for users who want more control.
+              Details will be announced when available.
+            </p>
+            <a class="btn secondary" href="#shop" aria-disabled="true">Coming soon</a>
+          </article>
+
+          <article class="shop-card">
+            <span class="coming-badge">Coming soon</span>
+            <h3>Ad-free experience</h3>
+            <p>
+              Enjoy TBO without ads if an ad-free option becomes available.
+              Availability and details have not been announced.
+            </p>
+            <a class="btn secondary" href="#shop" aria-disabled="true">Coming soon</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="promise">
+      <div class="container">
+        <div class="promise">
+          <h2>Simple. Clear. <span class="gradient">TBO.</span></h2>
+          <p>
+            We want TBO to be straightforward to use. There will never be a key system.
+            We'll share clear information about any future features and monetization before they launch.
+          </p>
+
+          <div class="promise-points">
+            <span>✓ No key system</span>
+            <span>✓ Clear updates</span>
+            <span>✓ No subscriptions currently available</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">Frequently asked questions</div>
+          <h2>Have a question? We've got answers.</h2>
+        </div>
+
+        <div class="faq-list">
+          <details>
+            <summary>What devices does TBO support?</summary>
+            <div class="faq-answer">
+              TBO is being presented with iOS and Android options. Check the download section
+              for availability; downloads aren't available yet.
             </div>
-          </div>
-          <div class="download-meta">
-            <span class="tag">Version: Not announced</span>
-            <span class="tag">Platform: Not specified</span>
-            <span class="tag">Release: Unpublished</span>
-          </div>
-        </div>
+          </details>
 
-        <div class="download-action">
-          <a class="button primary" href="#release-info">
-            View release info ↗
-          </a>
-          <small>Download link not configured</small>
-        </div>
-      </div>
+          <details>
+            <summary>What scripts can TBO execute?</summary>
+            <div class="faq-answer">
+              Supported script types and compatibility details will be published when the
+              relevant features are available.
+            </div>
+          </details>
 
-      <div class="notice" id="release-info">
-        <strong>Release information</strong><br>
-        Official version details and a verified download link
-        will appear here once configured.
+          <details>
+            <summary>Can my Roblox account get banned for using TBO?</summary>
+            <div class="faq-answer">
+              Using third-party tools or exploits may violate Roblox's rules and can result
+              in account moderation. No third-party tool can guarantee that an account won't
+              be moderated.
+            </div>
+          </details>
+
+          <details>
+            <summary>How can I find scripts for TBO?</summary>
+            <div class="faq-answer">
+              Information about compatibility and supported resources will be shared as
+              TBO develops. Be cautious with unknown downloads and never share your account
+              credentials with third parties.
+            </div>
+          </details>
+
+          <details>
+            <summary>Are Roblox exploits allowed?</summary>
+            <div class="faq-answer">
+              Roblox rules may prohibit exploiting or cheating. Review Roblox's current
+              Terms of Use and Community Standards before using third-party tools.
+            </div>
+          </details>
+
+          <details>
+            <summary>Does TBO have a key system?</summary>
+            <div class="faq-answer">
+              No. TBO will never have a key system.
+            </div>
+          </details>
+
+          <details>
+            <summary>Will TBO have paid features or an ad-free option?</summary>
+            <div class="faq-answer">
+              The Shop section previews possible advanced features and ad-free access.
+              Neither is available to purchase yet, and details will be announced if they launch.
+            </div>
+          </details>
+
+          <details>
+            <summary>How can I get help with TBO?</summary>
+            <div class="faq-answer">
+              Support information will be published when the official support channels are ready.
+              Check back for updates.
+            </div>
+          </details>
+
+          <details>
+            <summary>Have any other questions?</summary>
+            <div class="faq-answer">
+              Check this page for updates. More information will be added as TBO develops.
+            </div>
+          </details>
+        </div>
       </div>
     </section>
   </main>
 
   <footer>
-    <img src="./logohs.svg" alt="TBO">
-    <span>© <span id="year"></span> TBO. All rights reserved.</span>
-    <a href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">
-      Back to top ↑
-    </a>
+    <div class="footer-brand">
+      <img src="./logohs.svg" alt="TBO">
+      <span>© <span id="year"></span> TBO</span>
+    </div>
+    <div class="footer-right">
+      An independent project. Not affiliated with Roblox Corporation.
+    </div>
   </footer>
 
   <script>
-    document.getElementById("year").textContent =
-      new Date().getFullYear();
+    const menuButton = document.getElementById("menu-button");
+    const dropdown = document.getElementById("dropdown");
+
+    function closeMenu() {
+      dropdown.classList.remove("open");
+      menuButton.setAttribute("aria-expanded", "false");
+    }
+
+    menuButton.addEventListener("click", () => {
+      const isOpen = dropdown.classList.toggle("open");
+      menuButton.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest(".menu-wrap")) {
+        closeMenu();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeMenu();
+    });
+
+    const platformData = {
+      ios: {
+        title: "TBO for iOS",
+        description: "The iOS download isn't available yet. Check back for updates."
+      },
+      android: {
+        title: "TBO for Android",
+        description: "The Android download isn't available yet. Check back for updates."
+      }
+    };
+
+    function selectPlatform(platform, scroll = false) {
+      const data = platformData[platform];
+      if (!data) return;
+
+      document.getElementById("download-title").textContent = data.title;
+      document.getElementById("download-description").textContent = data.description;
+
+      document.querySelectorAll("[data-platform]").forEach((button) => {
+        const active = button.dataset.platform === platform;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+
+      document.querySelectorAll("[data-platform-link]").forEach((link) => {
+        link.addEventListener;
+        link.setAttribute("aria-current",
+          link.dataset.platformLink === platform ? "true" : "false");
+      });
+
+      closeMenu();
+
+      if (scroll) {
+        document.getElementById("download").scrollIntoView({ behavior: "smooth" });
+      }
+    }
+
+    function detectPlatform() {
+      const ua = navigator.userAgent || "";
+      const platform = navigator.platform || "";
+
+      if (/android/i.test(ua)) return "android";
+
+      if (
+        /iPhone|iPad|iPod/i.test(ua) ||
+        (platform === "MacIntel" && navigator.maxTouchPoints > 1)
+      ) {
+        return "ios";
+      }
+
+      return "ios";
+    }
+
+    document.querySelectorAll("[data-platform]").forEach((button) => {
+      button.addEventListener("click", () => {
+        selectPlatform(button.dataset.platform);
+      });
+    });
+
+    document.querySelectorAll("[data-platform-link]").forEach((link) => {
+      link.addEventListener("click", () => {
+        selectPlatform(link.dataset.platformLink);
+      });
+    });
+
+    document.querySelectorAll(".placeholder-link").forEach((link) => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        closeMenu();
+      });
+    });
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    selectPlatform(detectPlatform());
   </script>
 </body>
 </html>
