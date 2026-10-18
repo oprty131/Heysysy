@@ -1,307 +1,555 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#09090e">
-<title>TBO — Mobile</title>
-<meta name="description" content="TBO — Fast updates, 24/7 support, security-minded design, and no key system.">
-<style>
-:root{--bg:#09090e;--panel:#111119;--border:#282838;--muted:#9696aa;--purple:#8875ff}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:85px}
-body{margin:0;background:radial-gradient(ellipse at 50% 0%,#33256830,transparent 45%),var(--bg);color:#f5f4fb;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-a{color:inherit;text-decoration:none}
-button{font:inherit}
-nav{height:72px;max-width:1080px;padding:0 24px;margin:auto;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ffffff0c}
-.brand{display:flex;align-items:center;gap:10px;font-weight:850;letter-spacing:2px;font-size:20px}
-.menu-wrap{position:relative}
-.menu-button{display:flex;align-items:center;gap:9px;padding:10px 14px;border:1px solid var(--border);border-radius:10px;background:#ffffff05;color:#eee;cursor:pointer}
-.menu-button svg{width:17px;height:17px}
-.dropdown{position:absolute;z-index:10;right:0;top:calc(100% + 10px);width:235px;padding:8px;border:1px solid #323044;border-radius:13px;background:#111119;box-shadow:0 18px 55px #0009;display:none}
-.dropdown.open{display:block}
-.menu-label{padding:10px 10px 6px;color:#77788d;font-size:10px;letter-spacing:1.6px;font-weight:800;text-transform:uppercase}
-.menu-item{display:flex;align-items:center;gap:12px;width:100%;padding:12px 10px;border:0;border-radius:8px;background:transparent;color:#deddea;text-align:left;font-size:13px;cursor:pointer}
-.menu-item:hover{background:#ffffff0a}
-.symbol{width:23px;text-align:center;color:#b5a8ff;font-size:17px}
-.right{margin-left:auto;color:#85859a}
-.menu-separator{height:1px;background:#ffffff10;margin:6px 3px}
-.hero{text-align:center;padding:86px 20px 58px}
-h1{font-size:clamp(49px,10vw,78px);line-height:1.04;letter-spacing:-4px;margin:0;font-weight:850}
-.gradient{background:linear-gradient(100deg,#b5a3ff,#7799ff);background-clip:text;-webkit-background-clip:text;color:transparent}
-.hero p{max-width:470px;margin:20px auto 25px;color:var(--muted);font-size:14px;line-height:1.9}
-.actions{display:flex;justify-content:center;gap:11px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:13px 20px;border-radius:10px;font-size:13px;font-weight:750;transition:transform .2s;cursor:pointer}
-.btn:hover{transform:translateY(-2px)}
-.primary{background:linear-gradient(110deg,#7962f2,#5279f5);color:white;border:1px solid transparent;box-shadow:0 8px 28px #6558ff22}
-.secondary{border:1px solid var(--border);background:#ffffff05}
-.note-top{margin-top:17px;color:#77788b;font-size:11px}
-.section{max-width:970px;margin:auto;padding:48px 22px}
-.eyebrow{color:#a99aff;font-size:10px;letter-spacing:2px;font-weight:800;text-transform:uppercase}
-h2{font-size:clamp(27px,5vw,35px);letter-spacing:-1px;margin:8px 0}
-.desc{margin:0;color:var(--muted);font-size:13px;line-height:1.8}
-.platform-card{margin-top:25px;border:1px solid #35304c;border-radius:16px;overflow:hidden;background:linear-gradient(140deg,#15141f,#101017 60%)}
-.platforms{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:12px;border-bottom:1px solid var(--border)}
-.platform{padding:14px 10px;border:1px solid transparent;border-radius:9px;background:transparent;color:#9696aa;font-size:13px;font-weight:750;cursor:pointer}
-.platform.active{background:#8875ff16;border-color:#6152ad;color:#fff}
-.platform-content{padding:28px}
-.platform-heading{display:flex;align-items:center;gap:15px;margin-bottom:22px}
-.platform-icon{display:grid;place-items:center;width:51px;height:51px;border:1px solid #39334f;border-radius:13px;background:#8875ff12;font-size:23px;color:#c1b4ff}
-.platform-heading h3{margin:0;font-size:20px}
-.platform-heading p{margin:4px 0 0;color:var(--muted);font-size:12px}
-.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:23px}
-.info{padding:14px;border:1px solid #292936;border-radius:9px;background:#08080d66}
-.info small{display:block;margin-bottom:5px;color:#85859a;font-size:10px}
-.info strong{font-size:12px}
-.download{width:100%;border:0}
-.download-note{text-align:center;color:#7d7d91;font-size:11px;line-height:1.7;margin:12px 0 0}
-.features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:25px}
-.feature{padding:23px 20px;border:1px solid var(--border);border-radius:13px;background:linear-gradient(145deg,#14141d,#0e0e14)}
-.feature-icon{display:grid;place-items:center;width:38px;height:38px;margin-bottom:17px;border:1px solid #39334f;border-radius:10px;background:#8875ff12;color:#b9aaff;font-size:18px}
-.feature h3{font-size:14px;margin:0 0 8px}
-.feature p{font-size:12px;line-height:1.8;color:var(--muted);margin:0}
-.promise{margin-top:25px;padding:28px;border:1px solid #3b3458;border-radius:15px;background:radial-gradient(ellipse at 100% 0%,#7964ff16,transparent 60%),#111119}
-.promise-top{display:flex;align-items:center;gap:13px;margin-bottom:13px}
-.promise-icon{display:grid;place-items:center;width:43px;height:43px;border-radius:12px;background:#8d78ff15;color:#b6a5ff;font-size:21px}
-.promise h3{margin:0;font-size:19px}
-.promise p{margin:0;color:#a3a3b5;font-size:13px;line-height:1.9}
-.promise strong{color:#dcd5ff}
-.faq-list{display:grid;gap:10px;margin-top:25px}
-.faq-item{border:1px solid var(--border);border-radius:11px;background:#111119;overflow:hidden}
-.faq-item summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:18px 19px;cursor:pointer;font-size:13px;font-weight:650}
-.faq-item summary::-webkit-details-marker{display:none}
-.faq-item summary::after{content:"+";font-size:20px;color:#a99aff;font-weight:400}
-.faq-item[open] summary::after{content:"−"}
-.faq-answer{padding:0 19px 19px;color:#a2a2b5;font-size:12px;line-height:1.9}
-.faq-answer a{color:#b5a6ff;text-decoration:underline}
-.faq-answer strong{color:#e4e0f7}
-.contact-box{margin-top:22px;padding:21px;border:1px solid #302c45;border-radius:12px;background:#111119}
-.contact-box p{color:var(--muted);font-size:13px;line-height:1.8;margin:7px 0 0}
-footer{max-width:1080px;margin:22px auto 0;padding:23px 24px;border-top:1px solid #ffffff0c;display:flex;align-items:center;justify-content:center;gap:16px}
-footer img{width:100px;max-height:46px;object-fit:contain}
-@media(max-width:650px){nav{padding:0 18px}.hero{padding:67px 19px 44px}h1{letter-spacing:-2.5px}.section{padding:38px 18px}.features{grid-template-columns:1fr}.feature{padding:21px}.platform-content{padding:21px 16px}.promise{padding:22px}footer{padding:20px 18px}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#09090e">
+  <meta name="description" content="TBO — Explore the next level of your Roblox mobile experience.">
+  <link rel="icon" type="image/svg+xml" href="./logok.svg">
+  <title>TBO</title>
+
+  <style>
+    :root {
+      --bg:#09090e;--surface:#111119;--text:#f5f4fb;
+      --muted:#a09fb4;--purple:#9b70ff;--border:rgba(255,255,255,.09)
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+
+    html{scroll-behavior:smooth;scroll-padding-top:90px}
+
+    body{
+      background:radial-gradient(ellipse at 50% -15%,rgba(111,67,213,.2),transparent 45%),var(--bg);
+      color:var(--text);
+      font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      line-height:1.6;
+      min-height:100vh
+    }
+
+    a{color:inherit;text-decoration:none}
+    button{font:inherit}
+    .container{width:min(1080px,calc(100% - 40px));margin:auto}
+
+    nav{
+      height:76px;display:flex;align-items:center;justify-content:space-between;
+      width:min(1180px,calc(100% - 40px));margin:auto;position:relative;z-index:10
+    }
+
+    .brand{
+      display:flex;align-items:center;font-size:22px;
+      font-weight:850;letter-spacing:-.8px
+    }
+
+    .menu-wrap{position:relative}
+
+    .menu-button{
+      display:grid;place-items:center;width:48px;height:46px;
+      color:var(--text);background:rgba(255,255,255,.045);
+      border:1px solid var(--border);border-radius:13px;cursor:pointer;
+      transition:background .2s,border-color .2s,transform .2s
+    }
+
+    .menu-button:hover{
+      background:rgba(255,255,255,.09);
+      border-color:rgba(155,112,255,.4);
+      transform:translateY(-1px)
+    }
+
+    .menu-icon{width:20px;display:grid;gap:5px}
+    .menu-icon span{height:2px;border-radius:2px;background:currentColor;width:100%}
+
+    .dropdown{
+      display:block;visibility:hidden;opacity:0;pointer-events:none;
+      position:absolute;right:0;top:calc(100% + 12px);
+      width:245px;padding:9px;
+      border:1px solid var(--border);background:#12121b;border-radius:17px;
+      box-shadow:0 20px 55px #0008;
+      transform:translateY(-12px) scale(.96);
+      transform-origin:top right;
+      transition:opacity .24s ease,transform .3s cubic-bezier(.2,.8,.2,1),visibility .24s
+    }
+
+    .dropdown.open{
+      visibility:visible;opacity:1;pointer-events:auto;
+      transform:translateY(0) scale(1)
+    }
+
+    .dropdown a{
+      display:block;padding:12px 13px;color:#d7d5e5;
+      font-size:14px;border-radius:10px;
+      transition:background .18s,color .18s,transform .18s
+    }
+
+    .dropdown a:hover{
+      background:rgba(155,112,255,.13);color:white;transform:translateX(3px)
+    }
+
+    .menu-divider{height:1px;margin:6px 7px;background:var(--border)}
+
+    .hero{
+      min-height:590px;padding:95px 20px 105px;
+      display:flex;flex-direction:column;align-items:center;
+      justify-content:center;text-align:center
+    }
+
+    h1{
+      font-size:clamp(43px,7vw,76px);line-height:1.08;
+      letter-spacing:-4px;font-weight:850
+    }
+
+    .gradient{
+      background:linear-gradient(100deg,#b69aff,#8c78ff 45%,#68a1ff);
+      -webkit-background-clip:text;background-clip:text;color:transparent
+    }
+
+    .hero p{max-width:570px;margin:23px auto 0;color:var(--muted);font-size:17px}
+
+    .actions{
+      display:flex;align-items:center;justify-content:center;flex-wrap:wrap;
+      gap:12px;margin-top:32px
+    }
+
+    .btn{
+      display:inline-flex;justify-content:center;align-items:center;gap:9px;
+      min-height:47px;padding:12px 21px;border:1px solid transparent;
+      border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;
+      transition:transform .2s,background .2s
+    }
+
+    .btn:hover{transform:translateY(-2px)}
+    .btn.primary{
+      color:white;background:linear-gradient(110deg,#8b65f6,#627dff);
+      box-shadow:0 7px 28px #735bf52e
+    }
+
+    .btn.secondary{
+      background:rgba(255,255,255,.045);border-color:var(--border);color:var(--text)
+    }
+
+    .btn.secondary:hover{background:rgba(255,255,255,.09)}
+    .note-top{margin-top:22px;font-size:12px;color:#89879e}
+
+    .scroll-cue{
+      display:flex;flex-direction:column;align-items:center;gap:8px;
+      margin-top:44px;color:#aaa1c9;font-size:11px;font-weight:750;
+      letter-spacing:2px;text-transform:uppercase;
+      animation:cueEnter .9s cubic-bezier(.16,1,.3,1) .2s both
+    }
+
+    .scroll-cue svg{width:30px;height:30px;overflow:visible}
+    .scroll-cue .arrow{
+      animation:arrowFloat 1.6s ease-in-out infinite;
+      transform-origin:center
+    }
+
+    @keyframes cueEnter{
+      from{opacity:0;transform:translateY(-22px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+
+    @keyframes arrowFloat{
+      0%,100%{transform:translateY(-2px)}
+      50%{transform:translateY(5px)}
+    }
+
+    section{padding:80px 0}
+    .section-heading{text-align:center;margin-bottom:36px}
+    .eyebrow{color:#ad91ff;font-size:11px;font-weight:800;letter-spacing:2.4px;text-transform:uppercase}
+
+    h2{font-size:clamp(29px,4vw,42px);letter-spacing:-1.5px;line-height:1.2;margin-top:10px}
+
+    .section-description{max-width:560px;margin:13px auto 0;color:var(--muted);font-size:15px}
+
+    .download-panel{
+      max-width:760px;margin:auto;padding:30px;
+      background:linear-gradient(145deg,rgba(155,112,255,.08),rgba(99,138,255,.025));
+      border:1px solid var(--border);border-radius:22px
+    }
+
+    .platforms{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:22px}
+
+    .platform{
+      display:flex;align-items:center;gap:13px;padding:17px;color:var(--text);
+      text-align:left;background:rgba(255,255,255,.025);
+      border:1px solid var(--border);border-radius:14px;cursor:pointer
+    }
+
+    .platform:hover,.platform.active{
+      border-color:rgba(155,112,255,.7);background:rgba(155,112,255,.09)
+    }
+
+    .platform-symbol{
+      display:grid;place-items:center;width:42px;height:42px;flex-shrink:0;
+      background:rgba(255,255,255,.06);border-radius:12px;font-size:21px
+    }
+
+    .platform strong{display:block;font-size:15px}
+    .platform small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+
+    .download-status{text-align:center;padding:22px 15px 5px;border-top:1px solid var(--border)}
+    .download-status strong{display:block;font-size:17px}
+    .download-status p{color:var(--muted);font-size:13px;margin:5px 0 16px}
+    .download-status .btn{min-width:180px}
+
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}
+
+    .feature-card{
+      padding:25px;border:1px solid var(--border);
+      background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012));
+      border-radius:18px;transition:transform .2s,border-color .2s
+    }
+
+    .feature-card:hover{transform:translateY(-4px);border-color:rgba(155,112,255,.35)}
+
+    .feature-icon{
+      display:grid;place-items:center;width:45px;height:45px;margin-bottom:19px;
+      border:1px solid rgba(155,112,255,.18);background:rgba(155,112,255,.1);
+      border-radius:13px;font-size:21px
+    }
+
+    .feature-card h3{font-size:17px;margin-bottom:8px}
+    .feature-card p{color:var(--muted);font-size:14px}
+
+    /* Original keyless promise box */
+    .promise{
+      margin-top:25px;padding:28px;border:1px solid #3b3458;
+      border-radius:15px;
+      background:radial-gradient(ellipse at 100% 0%,#7964ff16,transparent 60%),#111119
+    }
+
+    .promise-top{display:flex;align-items:center;gap:13px;margin-bottom:13px}
+
+    .promise-icon{
+      display:grid;place-items:center;width:43px;height:43px;flex-shrink:0;
+      border-radius:12px;background:rgba(155,112,255,.12);
+      border:1px solid rgba(155,112,255,.24);color:#b69aff;font-size:21px
+    }
+
+    .promise h2{margin-top:0}
+    .promise h3{font-size:18px;margin:0}
+    .promise p{max-width:760px;margin:12px 0 0;color:var(--muted);font-size:14px}
+
+    .promise-label{
+      color:#ad91ff;font-size:10px;font-weight:800;
+      letter-spacing:2px;text-transform:uppercase;margin-bottom:3px
+    }
+
+    .faq-list{max-width:780px;margin:auto}
+    details{border-bottom:1px solid var(--border)}
+    details:first-child{border-top:1px solid var(--border)}
+
+    summary{
+      display:flex;align-items:center;justify-content:space-between;gap:15px;
+      padding:19px 3px;cursor:pointer;list-style:none;font-weight:650;font-size:15px
+    }
+
+    summary::-webkit-details-marker{display:none}
+    summary::after{content:"+";color:#b49aff;font-size:22px;font-weight:400}
+    details[open] summary::after{content:"−"}
+    .faq-answer{padding:0 25px 20px 3px;color:var(--muted);font-size:14px}
+
+    @media(max-width:700px){
+      .hero{min-height:530px;padding:75px 15px 80px}
+      h1{letter-spacing:-2.5px}
+      .hero p{font-size:15px}
+      section{padding:62px 0}
+      .cards{grid-template-columns:1fr}
+      .feature-card{padding:22px}
+      .download-panel{padding:18px}
+      .platforms{gap:9px}
+      .platform{padding:12px;gap:9px}
+      .platform-symbol{width:34px;height:34px;font-size:18px}
+      .platform strong{font-size:13px}
+      .platform small{font-size:11px}
+      .promise{padding:24px}
+    }
+
+    @media(max-width:380px){
+      .container,nav{width:calc(100% - 28px)}
+      .actions{width:100%}
+      .actions .btn{flex:1;padding:11px 13px}
+      .platforms{grid-template-columns:1fr}
+      .dropdown{width:min(245px,calc(100vw - 28px))}
+    }
+
+    @media(prefers-reduced-motion:reduce){
+      *,*::before,*::after{
+        scroll-behavior:auto!important;
+        animation-duration:.01ms!important;
+        animation-iteration-count:1!important;
+        transition-duration:.01ms!important
+      }
+    }
+  </style>
 </head>
+
 <body>
-<nav>
-  <a class="brand" href="#" aria-label="TBO home"><span>TBO</span></a>
-  <div class="menu-wrap">
-    <button class="menu-button" id="menu-button" aria-expanded="false" aria-controls="dropdown">
-      Menu
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-    </button>
-    <div class="dropdown" id="dropdown">
-      <div class="menu-label">Platforms</div>
-      <button class="menu-item" data-platform="ios"><span class="symbol"></span>iOS <span class="right">↗</span></button>
-      <button class="menu-item" data-platform="android"><span class="symbol">◈</span>Android <span class="right">↗</span></button>
-      <div class="menu-separator"></div>
-      <div class="menu-label">Community</div>
-      <a class="menu-item placeholder-link" href="#community"><span class="symbol">➤</span>Telegram <span class="right">↗</span></a>
-      <a class="menu-item placeholder-link" href="#community"><span class="symbol">◉</span>Discord <span class="right">↗</span></a>
-      <div class="menu-separator"></div>
-      <a class="menu-item" href="#features"><span class="symbol">✧</span>Features</a>
-      <a class="menu-item" href="#faq"><span class="symbol">?</span>FAQ</a>
-    </div>
-  </div>
-</nav>
+  <nav>
+    <a class="brand" href="#" aria-label="TBO home">TBO</a>
 
-<header class="hero">
-  <h1>More with <span class="gradient">TBO.</span></h1>
-  <p>A new destination for your Roblox mobile experience. Choose your platform and explore what TBO has to offer.</p>
-  <div class="actions">
-    <a class="btn secondary" href="/#features">Explore more</a>
-  </div>
-  <div class="note-top">Free to access · Supported by ads · No key system, ever</div>
-</header>
+    <div class="menu-wrap">
+      <button class="menu-button" id="menu-button"
+        aria-label="Open menu" aria-expanded="false"
+        aria-controls="dropdown" type="button">
+        <span class="menu-icon" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </span>
+      </button>
 
-<main>
-<section class="section" id="download">
-  <div class="eyebrow">Get started</div>
-  <h2>Choose your platform</h2>
-  <p class="desc">Your device is selected automatically where possible. You can switch platforms at any time.</p>
-  <div class="platform-card">
-    <div class="platforms" role="group" aria-label="Select device platform">
-      <button class="platform active" id="ios-tab" aria-pressed="true" type="button"> &nbsp; iOS</button>
-      <button class="platform" id="android-tab" aria-pressed="false" type="button">◈ &nbsp; Android</button>
-    </div>
-    <div class="platform-content">
-      <div class="platform-heading">
-        <div class="platform-icon" id="platform-icon"></div>
-        <div><h3 id="platform-name">TBO for iOS</h3><p id="platform-description">For iPhone and iPad</p></div>
+      <div class="dropdown" id="dropdown">
+        <a href="#download" data-platform-link="ios">iOS</a>
+        <a href="#download" data-platform-link="android">Android</a>
+        <div class="menu-divider"></div>
+        <a href="./shop/">Shop</a>
+        <a href="#features">Features</a>
+        <a href="#faq">FAQ</a>
+        <div class="menu-divider"></div>
+        <a href="#" class="placeholder-link">Telegram</a>
+        <a href="#" class="placeholder-link">Discord</a>
       </div>
-      <div class="info-grid">
-        <div class="info"><small>PLATFORM</small><strong id="platform-label">iOS / iPadOS</strong></div>
-        <div class="info"><small>ACCESS</small><strong>Free · Ad-supported</strong></div>
-      </div>
-      <a class="btn primary download" id="download-button" href="#download"><span id="download-label">iOS — Coming soon</span> ↗</a>
-      <p class="download-note" id="download-note">TBO is in testing. Download links will be added when they're ready.</p>
     </div>
-  </div>
-</section>
+  </nav>
 
-<section class="section" id="features">
-  <div class="eyebrow">The experience</div>
-  <h2>Built for your experience</h2>
-  <p class="desc">Designed with simplicity, updates, and support in mind.</p>
-  <div class="features">
-    <article class="feature"><div class="feature-icon">↻</div><h3>Fast updates</h3><p>We aim to deliver updates quickly, keeping users informed as new versions become available.</p></article>
-    <article class="feature"><div class="feature-icon">◉</div><h3>24/7 support</h3><p>Support information will be available around the clock. Response times may vary.</p></article>
-    <article class="feature"><div class="feature-icon">♢</div><h3>Security-minded</h3><p>Security matters. Only use trusted downloads, review permissions, and never share account passwords or private credentials.</p></article>
-  </div>
-</section>
+  <header class="hero">
+    <h1>More with <span class="gradient">TBO.</span></h1>
+    <p>A new destination for your Roblox mobile experience. Choose your platform and explore what TBO has to offer.</p>
 
-<section class="section" id="promise">
-  <div class="eyebrow">Our promise</div>
-  <h2>No keys. No paid plans.</h2>
-  <div class="promise">
-    <div class="promise-top"><div class="promise-icon">✓</div><h3>Always keyless</h3></div>
-    <p><strong>TBO will never have a key system.</strong> There are no key checkpoints to complete and no keys to obtain. Ads are the <strong>only monetization method</strong> planned for TBO. There are no paid subscriptions or premium plans.</p>
-  </div>
-</section>
+    <div class="actions">
+      <a class="btn secondary" href="/#features">Explore more <span aria-hidden="true">↗</span></a>
+      <a class="btn primary" href="#download">Download <span aria-hidden="true">↓</span></a>
+    </div>
 
-<section class="section" id="faq">
-  <div class="eyebrow">Frequently asked questions</div>
-  <h2>Have a question?</h2>
-  <p class="desc">We've got answers. If you have any other questions, feel free to contact us through our community channels once they're available.</p>
+    <div class="note-top">Free to access · Supported by ads · No key system, ever</div>
 
-  <div class="faq-list">
-    <details class="faq-item">
-      <summary>What devices does TBO support?</summary>
-      <div class="faq-answer">TBO is planning separate options for <strong>iOS and Android</strong>. The site is currently in testing, so check back for confirmed compatibility and download availability.</div>
-    </details>
-    <details class="faq-item">
-      <summary>What scripts can TBO execute?</summary>
-      <div class="faq-answer">Supported functionality and compatibility have not yet been confirmed for this test site. We'll publish accurate information when the project details are finalized. Only use scripts you trust and understand.</div>
-    </details>
-    <details class="faq-item">
-      <summary>Can my Roblox account get banned for using TBO?</summary>
-      <div class="faq-answer">Using third-party tools or exploits may violate Roblox's rules and can result in account moderation, including suspension or bans. <strong>No third-party tool can guarantee that your account is safe from enforcement.</strong></div>
-    </details>
-    <details class="faq-item">
-      <summary>How can I find scripts for TBO?</summary>
-      <div class="faq-answer">Community links are placeholders while TBO is in testing. Avoid downloading unknown files, sharing credentials, or running code from sources you don't trust.</div>
-    </details>
-    <details class="faq-item">
-      <summary>Are Roblox exploits allowed?</summary>
-      <div class="faq-answer">Exploiting or cheating can violate Roblox's Terms of Use and Community Standards. Review Roblox's current rules before using third-party software. TBO does not guarantee that use of any tool is permitted by Roblox.</div>
-    </details>
-    <details class="faq-item">
-      <summary>Does TBO have a key system?</summary>
-      <div class="faq-answer"><strong>No. TBO will never have a key system.</strong> You won't need to complete key checkpoints or obtain a key. Ads are the only planned way TBO will monetize the project.</div>
-    </details>
-    <details class="faq-item">
-      <summary>Does TBO have paid plans or subscriptions?</summary>
-      <div class="faq-answer">No. TBO is planned to be free to access, with ads as its only monetization. There are no paid plans or subscriptions.</div>
-    </details>
-    <details class="faq-item">
-      <summary>How can I get help or contact TBO?</summary>
-      <div class="faq-answer">We plan to provide 24/7 support. Telegram and Discord links will be added when they're ready. Support response times may vary.</div>
-    </details>
-    <details class="faq-item">
-      <summary>Have any other questions?</summary>
-      <div class="faq-answer">Check back for updates as the test site develops. Our Telegram and Discord community links will be available here once they're configured.</div>
-    </details>
-  </div>
+    <a class="scroll-cue" href="#download" aria-label="Scroll down to get started">
+      <span>Scroll to explore</span>
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path class="arrow" d="M12 3v17m-7-7 7 7 7-7"
+          stroke="currentColor" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </header>
 
-  <div class="contact-box" id="community">
-    <strong>Still have questions?</strong>
-    <p>Community links are coming soon. Check back here for Telegram, Discord, and other support information.</p>
-  </div>
-</section>
-</main>
+  <main>
+    <section id="download">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">Get started</div>
+          <h2>Choose your platform.</h2>
+          <p class="section-description">Select your device to see the latest download information for TBO.</p>
+        </div>
 
-<footer>
-  <a href="#" aria-label="TBO home"><img src="./logohs.svg" alt="TBO"></a>
-</footer>
+        <div class="download-panel">
+          <div class="platforms">
+            <button class="platform" id="ios-tab" data-platform="ios" type="button">
+              <span class="platform-symbol" aria-hidden="true"></span>
+              <span><strong>iOS</strong><small>iPhone and iPad</small></span>
+            </button>
 
-<script>
-const menuButton=document.getElementById("menu-button");
-const dropdown=document.getElementById("dropdown");
+            <button class="platform" id="android-tab" data-platform="android" type="button">
+              <span class="platform-symbol" aria-hidden="true">◈</span>
+              <span><strong>Android</strong><small>Android devices</small></span>
+            </button>
+          </div>
 
-function closeMenu(){
-  dropdown.classList.remove("open");
-  menuButton.setAttribute("aria-expanded","false");
-}
+          <div class="download-status" aria-live="polite">
+            <strong id="download-title">TBO for iOS</strong>
+            <p id="download-description">The iOS download isn't available yet. Check back for updates.</p>
+            <a class="btn primary" href="#download">Coming soon</a>
+          </div>
+        </div>
+      </div>
+    </section>
 
-menuButton.addEventListener("click",()=>{
-  const open=!dropdown.classList.contains("open");
-  dropdown.classList.toggle("open",open);
-  menuButton.setAttribute("aria-expanded",String(open));
-});
+    <section id="features">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">Why TBO</div>
+          <h2>Made with you in mind.</h2>
+          <p class="section-description">Our focus is a straightforward experience, helpful support, and clear information.</p>
+        </div>
 
-document.addEventListener("click",event=>{
-  if(!event.target.closest(".menu-wrap"))closeMenu();
-});
+        <div class="cards">
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">⚡</div>
+            <h3>Fast updates</h3>
+            <p>Stay informed about new releases and important changes as TBO develops.</p>
+          </article>
 
-document.addEventListener("keydown",event=>{
-  if(event.key==="Escape"){closeMenu();menuButton.focus();}
-});
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">◉</div>
+            <h3>24/7 support</h3>
+            <p>Find helpful information and support resources when you need assistance.</p>
+          </article>
 
-const platformData={
-  ios:{
-    name:"TBO for iOS",
-    description:"For iPhone and iPad",
-    label:"iOS / iPadOS",
-    icon:"",
-    download:"iOS — Coming soon"
-  },
-  android:{
-    name:"TBO for Android",
-    description:"For Android phones and tablets",
-    label:"Android",
-    icon:"◈",
-    download:"Android — Coming soon"
-  }
-};
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">◇</div>
+            <h3>Security-minded</h3>
+            <p>We aim to make safety a priority and provide clear information about using TBO.</p>
+          </article>
+        </div>
+      </div>
+    </section>
 
-function selectPlatform(platform,scroll=true){
-  const item=platformData[platform];
-  if(!item)return;
+    <section id="promise">
+      <div class="container">
+        <div class="promise">
+          <div class="promise-top">
+            <div class="promise-icon" aria-hidden="true">✓</div>
+            <div>
+              <div class="promise-label">Our promise</div>
+              <h3>Always keyless</h3>
+            </div>
+          </div>
 
-  document.getElementById("ios-tab").classList.toggle("active",platform==="ios");
-  document.getElementById("android-tab").classList.toggle("active",platform==="android");
-  document.getElementById("ios-tab").setAttribute("aria-pressed",String(platform==="ios"));
-  document.getElementById("android-tab").setAttribute("aria-pressed",String(platform==="android"));
-  document.getElementById("platform-icon").textContent=item.icon;
-  document.getElementById("platform-name").textContent=item.name;
-  document.getElementById("platform-description").textContent=item.description;
-  document.getElementById("platform-label").textContent=item.label;
-  document.getElementById("download-label").textContent=item.download;
-  document.getElementById("download-note").textContent="TBO is in testing. Download links will be added when they're ready.";
-  closeMenu();
+          <h2>No keys. No paid plans.</h2>
+          <p>TBO will never have a key system. There are no key checkpoints to complete and no keys to obtain. Ads are the only monetization method planned for TBO. There are no paid subscriptions or premium plans.</p>
+        </div>
+      </div>
+    </section>
 
-  if(scroll)document.getElementById("download").scrollIntoView({behavior:"smooth"});
-}
+    <section id="faq">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">Frequently asked questions</div>
+          <h2>Have a question? We've got answers.</h2>
+        </div>
 
-function detectPlatform(){
-  const ua=navigator.userAgent||"";
-  const platform=navigator.platform||"";
+        <div class="faq-list">
+          <details>
+            <summary>What devices does TBO support?</summary>
+            <div class="faq-answer">TBO is being presented with iOS and Android options. Check the download section for availability; downloads aren't available yet.</div>
+          </details>
 
-  if(/android/i.test(ua))return "android";
+          <details>
+            <summary>What scripts can TBO execute?</summary>
+            <div class="faq-answer">Supported script types and compatibility details will be published when the relevant features are available.</div>
+          </details>
 
-  if(/iPhone|iPad|iPod/i.test(ua)||(platform==="MacIntel"&&navigator.maxTouchPoints>1)){
-    return "ios";
-  }
+          <details>
+            <summary>Can my Roblox account get banned for using TBO?</summary>
+            <div class="faq-answer">Using third-party tools or exploits may violate Roblox's rules and can result in account moderation. No third-party tool can guarantee that an account won't be moderated.</div>
+          </details>
 
-  return "ios";
-}
+          <details>
+            <summary>How can I find scripts for TBO?</summary>
+            <div class="faq-answer">Information about compatibility and supported resources will be shared as TBO develops. Be cautious with unknown downloads and never share your account credentials with third parties.</div>
+          </details>
 
-document.querySelectorAll("[data-platform]").forEach(button=>{
-  button.addEventListener("click",()=>selectPlatform(button.dataset.platform));
-});
+          <details>
+            <summary>Are Roblox exploits allowed?</summary>
+            <div class="faq-answer">Roblox rules may prohibit exploiting or cheating. Review Roblox's current Terms of Use and Community Standards before using third-party tools.</div>
+          </details>
 
-document.getElementById("ios-tab").addEventListener("click",()=>selectPlatform("ios",false));
-document.getElementById("android-tab").addEventListener("click",()=>selectPlatform("android",false));
+          <details>
+            <summary>Does TBO have a key system?</summary>
+            <div class="faq-answer">No. TBO will never have a key system.</div>
+          </details>
 
-document.querySelectorAll(".placeholder-link").forEach(link=>{
-  link.addEventListener("click",event=>{
-    event.preventDefault();
-    closeMenu();
-  });
-});
+          <details>
+            <summary>Does TBO have paid plans or subscriptions?</summary>
+            <div class="faq-answer">TBO's downloads aren't available yet. Check the Shop page for any future announcements about optional features or ad-free access.</div>
+          </details>
 
-selectPlatform(detectPlatform(),false);
-</script>
+          <details>
+            <summary>How can I get help with TBO?</summary>
+            <div class="faq-answer">Support information will be published when the official support channels are ready. Check back for updates.</div>
+          </details>
+
+          <details>
+            <summary>Have any other questions?</summary>
+            <div class="faq-answer">Check this page for updates. More information will be added as TBO develops.</div>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const menuButton = document.getElementById("menu-button");
+    const dropdown = document.getElementById("dropdown");
+
+    function closeMenu() {
+      dropdown.classList.remove("open");
+      menuButton.setAttribute("aria-expanded", "false");
+    }
+
+    menuButton.addEventListener("click", () => {
+      const open = dropdown.classList.toggle("open");
+      menuButton.setAttribute("aria-expanded", String(open));
+    });
+
+    document.addEventListener("click", event => {
+      if (!event.target.closest(".menu-wrap")) closeMenu();
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") closeMenu();
+    });
+
+    const platformData = {
+      ios: {
+        title: "TBO for iOS",
+        description: "The iOS download isn't available yet. Check back for updates."
+      },
+      android: {
+        title: "TBO for Android",
+        description: "The Android download isn't available yet. Check back for updates."
+      }
+    };
+
+    function selectPlatform(platform, scroll = false) {
+      const data = platformData[platform];
+      if (!data) return;
+
+      document.getElementById("download-title").textContent = data.title;
+      document.getElementById("download-description").textContent = data.description;
+
+      document.querySelectorAll("[data-platform]").forEach(button => {
+        const active = button.dataset.platform === platform;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+
+      closeMenu();
+
+      if (scroll) {
+        document.getElementById("download").scrollIntoView({ behavior: "smooth" });
+      }
+    }
+
+    function detectPlatform() {
+      const ua = navigator.userAgent || "";
+      const platform = navigator.platform || "";
+
+      if (/android/i.test(ua)) return "android";
+      if (/iPhone|iPad|iPod/i.test(ua) ||
+          (platform === "MacIntel" && navigator.maxTouchPoints > 1)) return "ios";
+
+      return "ios";
+    }
+
+    document.querySelectorAll("[data-platform]").forEach(button => {
+      button.addEventListener("click", () => selectPlatform(button.dataset.platform));
+    });
+
+    document.querySelectorAll("[data-platform-link]").forEach(link => {
+      link.addEventListener("click", () => selectPlatform(link.dataset.platformLink));
+    });
+
+    document.querySelectorAll(".placeholder-link").forEach(link => {
+      link.addEventListener("click", event => {
+        event.preventDefault();
+        closeMenu();
+      });
+    });
+
+    document.querySelectorAll('.dropdown a[href^="#"]').forEach(link => {
+      link.addEventListener("click", () => closeMenu());
+    });
+
+    selectPlatform(detectPlatform());
+  </script>
 </body>
 </html>
