@@ -1,24 +1,128 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#09090e">
-<link rel="icon" type="image/svg+xml" href="../logok.svg">
-<title>TBO for iOS</title>
-<style>
-*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(ellipse at 50% 0%,#6f43d533,transparent 55%),#09090e;color:#f5f4fb;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.panel{width:min(600px,100%);text-align:center;padding:40px 26px;border:1px solid #ffffff17;background:#111119;border-radius:24px}.brand{font-size:23px;font-weight:850;letter-spacing:-1px}h1{margin-top:28px}p{color:#a09fb4;line-height:1.7}.status{margin:25px 0;padding:15px;border:1px solid #9b70ff40;background:#9b70ff12;border-radius:12px}.btn{display:inline-block;margin-top:10px;padding:12px 20px;border-radius:11px;background:linear-gradient(110deg,#8b65f6,#627dff);font-size:14px;font-weight:700;color:white;text-decoration:none}.back{display:block;margin-top:25px;color:#b69aff;font-size:14px}a{color:inherit;text-decoration:none}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#09090e">
+  <title>TBO</title>
+  <link rel="icon" type="image/svg+xml" href="../logok.svg">
+  <style>
+    :root{color-scheme:dark;--bg:#09090e;--panel:#111119;--border:#282838;--muted:#a3a3b5;--purple:#9b6cff}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;background:var(--bg);color:#f7f7fc;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6}
+    a{color:inherit;text-decoration:none}
+    .nav{position:sticky;top:0;z-index:20;background:rgba(9,9,14,.84);backdrop-filter:blur(18px);border-bottom:1px solid #ffffff12}
+    .nav-inner{max-width:1120px;height:76px;padding:0 24px;margin:auto;display:flex;align-items:center;justify-content:space-between}
+    .nav-left{display:flex;align-items:center;gap:13px}
+    .brand-logo{display:block;width:75px;max-height:42px;object-fit:contain}
+    .home-button{width:43px;height:43px;display:grid;place-items:center;border:1px solid var(--border);border-radius:13px;background:#12121b;transition:background .2s,transform .2s}
+    .home-button:hover{background:#211b35;transform:translateY(-1px)}
+    .home-button img{width:24px;height:24px;object-fit:contain}
+    .menu-wrap{position:relative}
+    .menu-toggle{width:48px;height:48px;display:grid;place-items:center;border:1px solid var(--border);border-radius:15px;background:#111119;color:white;cursor:pointer}
+    .hamburger{width:19px;display:flex;flex-direction:column;gap:5px}
+    .hamburger span{display:block;height:2px;width:100%;border-radius:4px;background:#fff;transition:transform .25s,opacity .2s}
+    .menu-toggle[aria-expanded="true"] .hamburger span:first-child{transform:translateY(7px) rotate(45deg)}
+    .menu-toggle[aria-expanded="true"] .hamburger span:nth-child(2){opacity:0}
+    .menu-toggle[aria-expanded="true"] .hamburger span:last-child{transform:translateY(-7px) rotate(-45deg)}
+    .dropdown{position:absolute;right:0;top:60px;width:260px;padding:10px;background:#12121b;border:1px solid #2a2a3b;border-radius:18px;box-shadow:0 24px 65px #0009;opacity:0;visibility:hidden;transform:translateY(-8px) scale(.98);transform-origin:top right;transition:opacity .2s,transform .2s,visibility .2s}
+    .dropdown.open{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
+    .dropdown a{display:flex;align-items:center;padding:11px 13px;border-radius:10px;color:#e5e5ef;font-size:14px;transition:background .2s}
+    .dropdown a:hover{background:#222132}
+    .dropdown .separator{height:1px;background:#292938;margin:7px 5px}
+    main{min-height:calc(100vh - 77px);display:grid;place-items:center;padding:65px 22px}
+    .content{width:100%;max-width:690px;text-align:center}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border:1px solid #34304b;background:#171424;border-radius:99px;color:#c8b6ff;font-size:12px;font-weight:700}
+    .dot{width:7px;height:7px;background:#a78bfa;border-radius:50%;box-shadow:0 0 12px #a78bfa}
+    h1{font-size:clamp(40px,7vw,64px);line-height:1.1;letter-spacing:-2.8px;margin:25px 0 15px}
+    .gradient{background:linear-gradient(105deg,#fff,#c4b5fd 52%,#80a5ff);background-clip:text;-webkit-background-clip:text;color:transparent}
+    .description{color:var(--muted);max-width:540px;margin:0 auto;font-size:16px}
+    .status{margin:30px auto 0;padding:22px;text-align:left;max-width:510px;border:1px solid var(--border);border-radius:18px;background:linear-gradient(145deg,#13131d,#0e0e15)}
+    .status h2{font-size:17px;margin:0 0 7px}
+    .status p{font-size:14px;color:var(--muted);margin:0}
+    .actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:26px}
+    .btn{min-height:47px;display:inline-flex;align-items:center;justify-content:center;padding:11px 19px;border:1px solid var(--border);border-radius:13px;background:#12121a;font-size:14px;font-weight:700;transition:transform .2s,border-color .2s}
+    .btn:hover{transform:translateY(-2px);border-color:#62538a}
+    .btn.primary{background:linear-gradient(110deg,#8961f5,#647dff);border-color:transparent}
+    @media(max-width:600px){.nav-inner{height:68px;padding:0 17px}.brand-logo{width:65px}.home-button{width:40px;height:40px}.menu-toggle{width:43px;height:43px}main{padding:48px 19px}h1{letter-spacing:-1.8px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
+  </style>
 </head>
 <body>
-<main class="panel">
-  <a class="brand" href="../">TBO</a>
-  <h1>TBO for iOS</h1>
-  <p>Everything related to the iOS version of TBO will be published here.</p>
-  <div class="status">The iOS download isn't available yet. Check back for updates.</div>
-  <a class="btn" href="https://discord.gg/" target="_blank" rel="noopener noreferrer">Join our Discord</a>
-  <a class="back" href="../download/">← Choose another platform</a>
-  <a class="back" href="../">Back to homepage</a>
-</main>
+  <header class="nav">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <a href="../" aria-label="TBO homepage">
+          <img class="brand-logo" src="../logohs.svg" alt="TBO">
+        </a>
+        <a class="home-button" href="../" aria-label="Return to homepage" title="Home">
+          <img src="../logok.svg" alt="">
+        </a>
+      </div>
+      <div class="menu-wrap">
+        <button class="menu-toggle" id="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="site-menu">
+          <span class="hamburger"><span></span><span></span><span></span></span>
+        </button>
+        <nav class="dropdown" id="site-menu" aria-label="Main navigation">
+          <a href="./">iOS</a>
+          <a href="../android/">Android</a>
+          <div class="separator"></div>
+          <a href="../shop/">Shop</a>
+          <a href="../#features">Features</a>
+          <a href="../#faq">FAQ</a>
+          <div class="separator"></div>
+          <a href="https://discord.gg/deltax" target="_blank" rel="noopener noreferrer">Discord</a>
+          <a href="https://t.me/deltadyn" target="_blank" rel="noopener noreferrer">Telegram</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="content">
+      <span class="eyebrow"><span class="dot"></span> iOS</span>
+      <h1>Get started with <span class="gradient">TBO.</span></h1>
+      <p class="description">The TBO download information for iOS will be available here.</p>
+
+      <div class="status">
+        <h2>Download not available yet</h2>
+        <p>Check back later for updates. You can join our community to stay informed when new information is available.</p>
+      </div>
+
+      <div class="actions">
+        <a class="btn primary" href="https://discord.gg/deltax" target="_blank" rel="noopener noreferrer">Join our Discord ↗</a>
+        <a class="btn" href="https://t.me/deltadyn" target="_blank" rel="noopener noreferrer">Join our Telegram ↗</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const toggle = document.getElementById("menu-toggle");
+    const menu = document.getElementById("site-menu");
+
+    function closeMenu() {
+      menu.classList.remove("open");
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.setAttribute("aria-label", "Open menu");
+    }
+
+    toggle.addEventListener("click", () => {
+      const isOpen = menu.classList.toggle("open");
+      toggle.setAttribute("aria-expanded", String(isOpen));
+      toggle.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
+    });
+
+    document.addEventListener("click", event => {
+      if (!event.target.closest(".menu-wrap")) closeMenu();
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") closeMenu();
+    });
+
+    menu.querySelectorAll("a").forEach(link => link.addEventListener("click", closeMenu));
+  </script>
 </body>
 </html>
