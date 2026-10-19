@@ -3,115 +3,100 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#09090e">
-  <title>TBO</title>
-  <link rel="icon" type="image/svg+xml" href="../logok.svg">
+  <title>TBO for Android</title>
+  <link rel="icon" href="../logok.svg" type="image/svg+xml">
   <style>
-    :root{color-scheme:dark;--bg:#09090e;--panel:#111119;--border:#282838;--muted:#a3a3b5}
+    :root{color-scheme:dark;--bg:#09090e;--panel:#11111a;--border:#252535;--text:#f5f5fb;--muted:#a2a2b5;--purple:#8b5cf6;--blue:#536dfe}
     *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{margin:0;min-height:100vh;background:var(--bg);color:#f7f7fc;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6;min-height:100vh}
     a{color:inherit;text-decoration:none}
-    .nav{position:sticky;top:0;z-index:20;background:rgba(9,9,14,.84);backdrop-filter:blur(18px);border-bottom:1px solid #ffffff12}
-    .nav-inner{max-width:1120px;height:76px;padding:0 24px;margin:auto;display:flex;align-items:center;justify-content:space-between}
-    .nav-left{display:flex;align-items:center;gap:13px}
+    .container{width:min(1080px,calc(100% - 40px));margin:auto}
+    .navbar{height:78px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07);position:relative;z-index:5}
+    .brand{display:inline-flex;align-items:center}
     .brand-logo{display:block;width:75px;max-height:42px;object-fit:contain}
-    .home-button{width:43px;height:43px;display:grid;place-items:center;border:1px solid var(--border);border-radius:13px;background:#12121b;transition:background .2s,transform .2s}
-    .home-button:hover{background:#211b35;transform:translateY(-1px)}
-    .home-button img{width:24px;height:24px;object-fit:contain}
     .menu-wrap{position:relative}
-    .menu-toggle{width:48px;height:48px;display:grid;place-items:center;border:1px solid var(--border);border-radius:15px;background:#111119;color:white;cursor:pointer}
-    .hamburger{width:19px;display:flex;flex-direction:column;gap:5px}
-    .hamburger span{display:block;height:2px;width:100%;border-radius:4px;background:#fff;transition:transform .25s,opacity .2s}
-    .menu-toggle[aria-expanded="true"] .hamburger span:first-child{transform:translateY(7px) rotate(45deg)}
-    .menu-toggle[aria-expanded="true"] .hamburger span:nth-child(2){opacity:0}
-    .menu-toggle[aria-expanded="true"] .hamburger span:last-child{transform:translateY(-7px) rotate(-45deg)}
-    .dropdown{position:absolute;right:0;top:60px;width:260px;padding:10px;background:#12121b;border:1px solid #2a2a3b;border-radius:18px;box-shadow:0 24px 65px #0009;opacity:0;visibility:hidden;transform:translateY(-8px) scale(.98);transform-origin:top right;transition:opacity .2s,transform .2s,visibility .2s}
-    .dropdown.open{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
-    .dropdown a{display:flex;align-items:center;padding:11px 13px;border-radius:10px;color:#e5e5ef;font-size:14px;transition:background .2s}
-    .dropdown a:hover{background:#222132}
-    .dropdown .separator{height:1px;background:#292938;margin:7px 5px}
-    main{min-height:calc(100vh - 77px);display:grid;place-items:center;padding:65px 22px}
-    .content{width:100%;max-width:690px;text-align:center}
-    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border:1px solid #34304b;background:#171424;border-radius:99px;color:#c8b6ff;font-size:12px;font-weight:700}
-    .dot{width:7px;height:7px;background:#a78bfa;border-radius:50%;box-shadow:0 0 12px #a78bfa}
-    h1{font-size:clamp(40px,7vw,64px);line-height:1.1;letter-spacing:-2.8px;margin:25px 0 15px}
-    .gradient{background:linear-gradient(105deg,#fff,#c4b5fd 52%,#80a5ff);background-clip:text;-webkit-background-clip:text;color:transparent}
-    .description{color:var(--muted);max-width:540px;margin:0 auto;font-size:16px}
-    .status{margin:30px auto 0;padding:22px;text-align:left;max-width:510px;border:1px solid var(--border);border-radius:18px;background:linear-gradient(145deg,#13131d,#0e0e15)}
-    .status h2{font-size:17px;margin:0 0 7px}
-    .status p{font-size:14px;color:var(--muted);margin:0}
-    .actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:26px}
-    .btn{min-height:47px;display:inline-flex;align-items:center;justify-content:center;padding:11px 19px;border:1px solid var(--border);border-radius:13px;background:#12121a;font-size:14px;font-weight:700;transition:transform .2s,border-color .2s}
-    .btn:hover{transform:translateY(-2px);border-color:#62538a}
-    .btn.primary{background:linear-gradient(110deg,#8961f5,#647dff);border-color:transparent}
-    @media(max-width:600px){.nav-inner{height:68px;padding:0 17px}.brand-logo{width:65px}.home-button{width:40px;height:40px}.menu-toggle{width:43px;height:43px}main{padding:48px 19px}h1{letter-spacing:-1.8px}}
-    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
+    .menu-button{width:46px;height:44px;display:grid;place-items:center;border:1px solid var(--border);border-radius:13px;background:#11111a;color:white;cursor:pointer}
+    .menu-button svg{width:22px;height:22px}
+    .dropdown{position:absolute;right:0;top:54px;width:220px;padding:8px;background:#12121b;border:1px solid var(--border);border-radius:15px;box-shadow:0 18px 55px #0009;display:none}
+    .dropdown.open{display:block}
+    .dropdown a{display:block;padding:10px 12px;border-radius:9px;color:#d8d8e6;font-size:14px}
+    .dropdown a:hover{background:#ffffff0d;color:white}
+    .separator{height:1px;background:var(--border);margin:6px}
+    main{min-height:calc(100vh - 145px);display:grid;place-items:center;padding:65px 0}
+    .content{width:min(660px,100%);margin:auto;text-align:center}
+    .badge{display:inline-flex;border:1px solid #38304f;background:#171322;color:#c9b7ff;border-radius:999px;padding:6px 13px;font-size:13px}
+    h1{font-size:clamp(37px,7vw,57px);letter-spacing:-2.5px;line-height:1.13;margin:22px 0 15px}
+    .gradient{background:linear-gradient(100deg,#b49aff,#778bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .intro{font-size:17px;color:var(--muted);margin:0 auto 30px;max-width:530px}
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:19px;padding:28px;text-align:left}
+    .card h2{font-size:20px;margin:0 0 8px}
+    .card p{font-size:14px;color:var(--muted);margin:0}
+    .actions{display:flex;flex-wrap:wrap;gap:11px;margin-top:22px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;min-height:45px;padding:11px 16px;border-radius:11px;font-size:14px;font-weight:700}
+    .primary{background:linear-gradient(110deg,var(--purple),var(--blue));color:white}
+    .secondary{background:#171720;border:1px solid var(--border);color:#eeeef7}
+    footer{padding:24px 0 30px;border-top:1px solid #ffffff0d;color:#77778d;font-size:13px;text-align:center}
+    @media(max-width:600px){.container{width:calc(100% - 30px)}main{padding:45px 0}.card{padding:22px}h1{letter-spacing:-1.6px}}
   </style>
 </head>
 <body>
-  <header class="nav">
-    <div class="nav-inner">
-      <div class="nav-left">
-        <a href="../" aria-label="TBO homepage">
-          <img class="brand-logo" src="../logohs.svg" alt="TBO">
-        </a>
-        <a class="home-button" href="../" aria-label="Return to homepage" title="Home">
-          <img src="../logok.svg" alt="">
-        </a>
-      </div>
-      <div class="menu-wrap">
-        <button class="menu-toggle" id="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="site-menu">
-          <span class="hamburger"><span></span><span></span><span></span></span>
-        </button>
-        <nav class="dropdown" id="site-menu" aria-label="Main navigation">
-          <a href="../ios/">iOS</a>
-          <a href="./">Android</a>
-          <div class="separator"></div>
-          <a href="../shop/">Shop</a>
-          <a href="../#features">Features</a>
-          <a href="../#faq">FAQ</a>
-          <div class="separator"></div>
-          <a href="https://discord.gg/deltax" target="_blank" rel="noopener noreferrer">Discord</a>
-          <a href="https://t.me/deltadyn" target="_blank" rel="noopener noreferrer">Telegram</a>
-        </nav>
-      </div>
+  <header class="navbar container">
+    <a class="brand" href="../" aria-label="TBO homepage">
+      <img class="brand-logo" src="../logohs.svg" alt="TBO">
+    </a>
+    <div class="menu-wrap">
+      <button class="menu-button" id="menu-button" aria-label="Open menu" aria-expanded="false" aria-controls="dropdown">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <nav class="dropdown" id="dropdown">
+        <a href="../ios/">iOS</a>
+        <a href="./">Android</a>
+        <div class="separator"></div>
+        <a href="../shop/">Shop</a>
+        <a href="../#features">Features</a>
+        <a href="../#faq">Frequently asked questions</a>
+        <div class="separator"></div>
+        <a href="https://discord.gg/deltax" target="_blank" rel="noopener noreferrer">Discord</a>
+        <a href="https://t.me/deltadyn" target="_blank" rel="noopener noreferrer">Telegram</a>
+      </nav>
     </div>
   </header>
 
-  <main>
-    <section class="content">
-      <span class="eyebrow"><span class="dot"></span> Android</span>
+  <main class="container">
+    <div class="content">
+      <span class="badge">Android</span>
       <h1>Get started with <span class="gradient">TBO.</span></h1>
-      <p class="description">The TBO download information for Android will be available here.</p>
+      <p class="intro">The TBO download information for Android will be available here.</p>
 
-      <div class="status">
+      <div class="card">
         <h2>Download not available yet</h2>
-        <p>Check back later for updates. You can join our community to stay informed when new information is available.</p>
+        <p>Check back later for download information, or join the community to stay updated.</p>
+        <div class="actions">
+          <a class="btn primary" href="https://discord.gg/deltax" target="_blank" rel="noopener noreferrer">Join our Discord</a>
+          <a class="btn secondary" href="https://t.me/deltadyn" target="_blank" rel="noopener noreferrer">Join our Telegram</a>
+        </div>
       </div>
-
-      <div class="actions">
-        <a class="btn primary" href="https://discord.gg/deltax" target="_blank" rel="noopener noreferrer">Join our Discord ↗</a>
-        <a class="btn" href="https://t.me/deltadyn" target="_blank" rel="noopener noreferrer">Join our Telegram ↗</a>
-      </div>
-    </section>
+    </div>
   </main>
 
+  <footer>
+    <div class="container">TBO</div>
+  </footer>
+
   <script>
-    const toggle = document.getElementById("menu-toggle");
-    const menu = document.getElementById("site-menu");
+    const menuButton = document.getElementById("menu-button");
+    const dropdown = document.getElementById("dropdown");
 
     function closeMenu() {
-      menu.classList.remove("open");
-      toggle.setAttribute("aria-expanded", "false");
-      toggle.setAttribute("aria-label", "Open menu");
+      dropdown.classList.remove("open");
+      menuButton.setAttribute("aria-expanded", "false");
     }
 
-    toggle.addEventListener("click", () => {
-      const isOpen = menu.classList.toggle("open");
-      toggle.setAttribute("aria-expanded", String(isOpen));
-      toggle.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
+    menuButton.addEventListener("click", () => {
+      const isOpen = dropdown.classList.toggle("open");
+      menuButton.setAttribute("aria-expanded", String(isOpen));
     });
 
     document.addEventListener("click", event => {
@@ -122,7 +107,9 @@
       if (event.key === "Escape") closeMenu();
     });
 
-    menu.querySelectorAll("a").forEach(link => link.addEventListener("click", closeMenu));
+    dropdown.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", closeMenu);
+    });
   </script>
 </body>
 </html>
