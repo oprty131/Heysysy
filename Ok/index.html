@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3D Cube</title>
+<style>
+  * { box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+  }
+
+  body {
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(circle at 50% 38%, #1c2238 0%, #0b0e18 55%, #05060a 100%);
+    overflow: hidden;
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    color: #6f7aa0;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .scene {
+    width: 220px;
+    height: 220px;
+    perspective: 900px;
+    perspective-origin: 50% 50%;
+  }
+
+  .cube {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    transform-style: preserve-3d;
+    cursor: grab;
+    touch-action: none;
+    will-change: transform;
+  }
+
+  .cube:active { cursor: grabbing; }
+
+  .face {
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    border: 1px solid hsla(var(--h), 100%, 85%, .45);
+    background:
+      linear-gradient(135deg,
+        hsla(var(--h), 95%, 68%, .55),
+        hsla(calc(var(--h) + 45), 90%, 52%, .30));
+    box-shadow:
+      inset 0 0 45px hsla(var(--h), 100%, 75%, .40),
+      inset 0 0 4px hsla(0, 0%, 100%, .6),
+      0 0 30px hsla(var(--h), 100%, 60%, .28);
+    backdrop-filter: blur(2px);
+  }
+
+  /* subtle inner highlight */
+  .face::after {
+    content: "";
+    position: absolute;
+    inset: 10px;
+    border-radius: 8px;
+    border: 1px solid hsla(var(--h), 100%, 90%, .22);
+  }
+
+  .front  { transform: translateZ(110px); }
+  .back   { transform: rotateY(180deg) translateZ(110px); }
+  .right  { transform: rotateY(90deg)   translateZ(110px); }
+  .left   { transform: rotateY(-90deg)  translateZ(110px); }
+  .top    { transform: rotateX(90deg)   translateZ(110px); }
+  .bottom { transform: rotateX(-90deg)  translateZ(110px); }
+
+  .hint {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: #4d5678;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+  <div class="scene">
+    <div class="cube" id="cube">
+      <div class="face front"  style="--h: 225"></div>
+      <div class="face back"   style="--h: 285"></div>
+      <div class="face right"  style="--h: 195"></div>
+      <div class="face left"   style="--h: 320"></div>
+      <div class="face top"    style="--h: 255"></div>
+      <div class="face bottom" style="--h: 165"></div>
+    </div>
+  </div>
+
+  <div class="hint">Drag to rotate</div>
+
+<script>
+  const cube = document.getElementById('cube');
+
+  const AUTO_SPIN   = 14;   // degrees per second when idle
+  const DRAG_SCALE  = 0.55; // degrees per pixel dragged
+  const HOME_X      = -22;  // resting tilt
+
+  let rx = HOME_X, ry = 32;
+  let velX = 0, velY = 0;
+  let dragging = false;
+  let lastX = 0, lastY = 0;
+  let lastT = performance.now();
+
+  function frame(t) {
+    const dt = Math.min((t - lastT) / 1000, 0.05);
+    lastT = t;
+
+    if (!dragging) {
+      // momentum decay (frame-rate independent)
+      const decay = Math.pow(0.05, dt);
+      velX *= decay;
+      velY *= decay;
+
+      ry += AUTO_SPIN * dt + velY * dt;
+      rx += velX * dt;
+
+      // ease the tilt back toward its resting angle
+      rx += (HOME_X - rx) * Math.min(1, dt * 2.2);
+    }
+
+    cube.style.transform = `rotateX(${rx.toFixed(3)}deg) rotateY(${ry.toFixed(3)}deg)`;
+    requestAnimationFrame(frame);
+  }
+
+  function onDown(e) {
+    dragging = true;
+    velX = velY = 0;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    cube.setPointerCapture(e.pointerId);
+  }
+
+  function onMove(e) {
+    if (!dragging) return;
+
+    const dx = e.clientX - lastX;
+    const dy = e.clientY - lastY;
+    lastX = e.clientX;
+    lastY = e.clientY;
+
+    ry += dx * DRAG_SCALE;
+    rx -= dy * DRAG_SCALE;
+    rx = Math.max(-89, Math.min(89, rx));
+
+    // store as velocity (deg/sec) for the release flick
+    velY = dx * DRAG_SCALE * 12;
+    velX = -dy * DRAG_SCALE * 12;
+  }
+
+  function onUp(e) {
+    dragging = false;
+    if (cube.hasPointerCapture(e.pointerId)) {
+      cube.releasePointerCapture(e.pointerId);
+    }
+  }
+
+  cube.addEventListener('pointerdown', onDown);
+  cube.addEventListener('pointermove', onMove);
+  cube.addEventListener('pointerup', onUp);
+  cube.addEventListener('pointercancel', onUp);
+
+  requestAnimationFrame(frame);
+</script>
+</body>
+</html>
