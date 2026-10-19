@@ -3,147 +3,139 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#09090e">
   <title>TBO</title>
-  <link rel="icon" type="image/svg+xml" href="./logok.svg">
+  <link rel="icon" href="./logok.svg" type="image/svg+xml">
   <style>
-    :root{color-scheme:dark;--bg:#09090e;--panel:#111119;--border:#242432;--muted:#a3a3b5;--purple:#9b6cff;--blue:#6585ff}
+    :root{color-scheme:dark;--bg:#09090e;--panel:#11111a;--border:#252535;--text:#f5f5fb;--muted:#a2a2b5;--purple:#8b5cf6;--blue:#536dfe}
     *{box-sizing:border-box}
-    html{scroll-behavior:smooth;scroll-padding-top:90px}
-    body{margin:0;background:var(--bg);color:#f7f7fc;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6}
+    html{scroll-behavior:smooth;scroll-padding-top:100px}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6}
     a{color:inherit;text-decoration:none}
-    button{font:inherit}
-    .nav{position:sticky;top:0;z-index:20;background:rgba(9,9,14,.82);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.07)}
-    .nav-inner{max-width:1120px;height:76px;padding:0 24px;margin:auto;display:flex;align-items:center;justify-content:space-between}
-    .brand{font-size:25px;font-weight:850;letter-spacing:-1.4px}
+    .container{width:min(1080px,calc(100% - 40px));margin:auto}
+    .navbar{height:78px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07);position:relative;z-index:5}
+    .brand{display:inline-flex;align-items:center}
+    .brand-logo{display:block;height:35px;max-width:130px;object-fit:contain}
     .menu-wrap{position:relative}
-    .menu-toggle{width:48px;height:48px;display:grid;place-items:center;border:1px solid var(--border);border-radius:15px;background:#111119;color:white;cursor:pointer}
-    .hamburger{width:19px;display:flex;flex-direction:column;gap:5px}
-    .hamburger span{display:block;height:2px;width:100%;border-radius:4px;background:#fff;transition:transform .25s,opacity .2s}
-    .menu-toggle[aria-expanded="true"] .hamburger span:first-child{transform:translateY(7px) rotate(45deg)}
-    .menu-toggle[aria-expanded="true"] .hamburger span:nth-child(2){opacity:0}
-    .menu-toggle[aria-expanded="true"] .hamburger span:last-child{transform:translateY(-7px) rotate(-45deg)}
-    .dropdown{position:absolute;right:0;top:60px;width:260px;padding:10px;background:#12121b;border:1px solid #2a2a3b;border-radius:18px;box-shadow:0 24px 65px #0009;opacity:0;visibility:hidden;transform:translateY(-8px) scale(.98);transform-origin:top right;transition:opacity .2s,transform .2s,visibility .2s}
-    .dropdown.open{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
-    .dropdown a{display:flex;align-items:center;padding:11px 13px;border-radius:10px;color:#e5e5ef;font-size:14px;transition:background .2s,color .2s}
-    .dropdown a:hover{background:#222132;color:white}
-    .dropdown .separator{height:1px;background:#292938;margin:7px 5px}
-    .hero{position:relative;overflow:hidden;min-height:600px;padding:125px 24px 105px;text-align:center;display:flex;align-items:center;justify-content:center}
-    .hero:before{content:"";position:absolute;width:560px;height:430px;top:0;left:50%;transform:translateX(-50%);background:radial-gradient(ellipse,rgba(113,74,255,.23),rgba(69,80,255,.08) 45%,transparent 72%);pointer-events:none}
-    .hero-content{position:relative;max-width:790px}
-    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border:1px solid #34304b;background:#171424;border-radius:99px;color:#c8b6ff;font-size:12px;font-weight:650;letter-spacing:.3px}
-    .eyebrow-dot{width:7px;height:7px;background:#a78bfa;border-radius:50%;box-shadow:0 0 12px #a78bfa}
-    h1{font-size:clamp(48px,8vw,82px);line-height:1.05;letter-spacing:-4px;margin:27px 0 22px;font-weight:850}
-    .gradient{background:linear-gradient(105deg,#fff 12%,#c4b5fd 48%,#80a5ff 90%);background-clip:text;-webkit-background-clip:text;color:transparent}
-    .hero p{max-width:620px;margin:0 auto;color:var(--muted);font-size:17px;line-height:1.8}
-    .actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:32px}
-    .btn{min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 20px;border:1px solid var(--border);border-radius:13px;font-size:14px;font-weight:700;transition:transform .2s,border-color .2s,background .2s}
-    .btn:hover{transform:translateY(-2px);border-color:#55506f}
-    .btn.primary{border-color:transparent;background:linear-gradient(110deg,#8961f5,#647dff);box-shadow:0 8px 28px #7257ed30}
-    .btn.secondary{background:#12121a}
-    .hero-note{margin-top:24px!important;font-size:12px!important;color:#858599!important}
-    .section{max-width:1120px;padding:82px 24px;margin:auto}
-    .section-heading{text-align:center;max-width:680px;margin:0 auto 38px}
-    .section-heading h2{font-size:clamp(30px,5vw,43px);letter-spacing:-1.6px;line-height:1.2;margin:0 0 13px}
-    .section-heading p{margin:0;color:var(--muted)}
-    .features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
-    .feature{min-height:190px;padding:25px;border:1px solid var(--border);background:linear-gradient(145deg,#13131d,#0e0e15);border-radius:19px}
-    .feature-icon{width:43px;height:43px;display:grid;place-items:center;margin-bottom:20px;border-radius:13px;background:#211b37;color:#c4b5fd;font-size:24px}
-    .feature h3{margin:0 0 8px;font-size:17px}
-    .feature p{margin:0;color:var(--muted);font-size:14px}
-    .promise{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:start;padding:30px;border:1px solid #393050;background:radial-gradient(ellipse at top left,#211a35,#111119 65%);border-radius:22px}
-    .promise-icon{width:48px;height:48px;border-radius:15px;background:#292044;color:#c4b5fd;display:grid;place-items:center;font-size:25px}
-    .promise-label{color:#bca8ff;font-size:12px;font-weight:750;text-transform:uppercase;letter-spacing:1px}
-    .promise h3{margin:5px 0 9px;font-size:25px;letter-spacing:-.7px}
-    .promise p{margin:0;color:var(--muted);font-size:14px}
-    .cta{max-width:1072px;margin:35px auto 60px;padding:60px 24px;text-align:center;border:1px solid #302746;border-radius:25px;background:radial-gradient(ellipse at top,#211938,#111119 70%)}
-    .cta h2{margin:0 0 5px;font-size:clamp(30px,5vw,42px);letter-spacing:-1.5px}
-    .cta .free{color:#c4b5fd;font-weight:750}
-    .cta p{max-width:580px;margin:12px auto 0;color:var(--muted)}
-    .faq-list{max-width:790px;margin:auto;display:grid;gap:12px}
-    details{padding:18px 20px;border:1px solid var(--border);border-radius:14px;background:#101018}
-    summary{cursor:pointer;font-weight:650}
-    details p{color:var(--muted);font-size:14px;margin:12px 0 0}
-    @media(max-width:700px){.nav-inner{height:68px;padding:0 18px}.hero{min-height:530px;padding:90px 20px}.hero h1{letter-spacing:-2.7px}.section{padding:65px 19px}.features{grid-template-columns:1fr}.feature{min-height:auto}.promise{padding:22px;gap:15px}.cta{margin:20px 16px 40px;padding:42px 20px}}
-    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
+    .menu-button{width:46px;height:44px;display:grid;place-items:center;border:1px solid var(--border);border-radius:13px;background:#11111a;color:white;cursor:pointer}
+    .menu-button svg{width:22px;height:22px}
+    .dropdown{position:absolute;right:0;top:54px;width:220px;padding:8px;background:#12121b;border:1px solid var(--border);border-radius:15px;box-shadow:0 18px 55px #0009;display:none}
+    .dropdown.open{display:block}
+    .dropdown a{display:block;padding:10px 12px;border-radius:9px;color:#d8d8e6;font-size:14px}
+    .dropdown a:hover{background:#ffffff0d;color:white}
+    .dropdown .separator{height:1px;background:var(--border);margin:6px}
+    .hero{text-align:center;padding:105px 0 95px}
+    .eyebrow,.badge{display:inline-flex;align-items:center;gap:8px;border:1px solid #38304f;background:#171322;color:#c9b7ff;border-radius:999px;padding:6px 12px;font-size:13px}
+    h1{font-size:clamp(44px,8vw,76px);letter-spacing:-3.5px;line-height:1.08;margin:25px 0 18px}
+    .gradient{background:linear-gradient(100deg,#b49aff,#778bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .hero p{max-width:610px;margin:0 auto;color:var(--muted);font-size:18px}
+    .actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:30px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:47px;padding:12px 20px;border-radius:12px;font-weight:700;font-size:14px;transition:transform .2s,opacity .2s}
+    .btn:hover{transform:translateY(-2px)}
+    .primary{background:linear-gradient(110deg,var(--purple),var(--blue));color:white;box-shadow:0 8px 28px #6852e52b}
+    .secondary{border:1px solid var(--border);background:#11111a;color:#eeeef7}
+    .hero-note{font-size:12px!important;margin-top:18px!important;color:#85859a!important}
+    section{padding:65px 0}
+    .section-heading{text-align:center;margin:0 auto 35px;max-width:650px}
+    .section-heading h2{font-size:clamp(29px,5vw,42px);letter-spacing:-1.5px;margin:0 0 10px}
+    .section-heading p{color:var(--muted);margin:0}
+    .feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+    .feature,.promise,.faq-item{background:var(--panel);border:1px solid var(--border);border-radius:18px}
+    .feature{padding:25px}
+    .feature-icon{width:43px;height:43px;display:grid;place-items:center;border-radius:13px;background:#201936;color:#c7b3ff;font-size:23px;margin-bottom:18px}
+    .feature h3{font-size:18px;margin:0 0 7px}
+    .feature p{font-size:14px;color:var(--muted);margin:0}
+    .promise{padding:clamp(25px,5vw,45px);display:flex;align-items:center;justify-content:space-between;gap:25px}
+    .promise .label{font-size:13px;color:#b9a3ff;font-weight:700}
+    .promise h2{font-size:clamp(28px,4vw,40px);letter-spacing:-1.4px;margin:8px 0}
+    .promise p{max-width:690px;color:var(--muted);margin:0}
+    .check{flex-shrink:0;width:58px;height:58px;border-radius:18px;display:grid;place-items:center;background:#1b3028;color:#8df0b4;font-size:29px}
+    .cta{text-align:center;padding:45px 20px}
+    .cta h2{font-size:clamp(30px,5vw,43px);letter-spacing:-1.5px;margin:0 0 8px}
+    .cta p{color:var(--muted);max-width:600px;margin:0 auto}
+    .faq-list{max-width:780px;margin:auto;display:grid;gap:12px}
+    .faq-item{padding:20px 22px}
+    .faq-item h3{font-size:16px;margin:0 0 7px}
+    .faq-item p{color:var(--muted);font-size:14px;margin:0}
+    footer{padding:25px 0 35px;border-top:1px solid #ffffff0d;color:#77778d;font-size:13px;text-align:center}
+    @media(max-width:700px){.hero{padding:80px 0 65px}h1{letter-spacing:-2px}.feature-grid{grid-template-columns:1fr}.promise{align-items:flex-start}.check{width:46px;height:46px;border-radius:14px}.container{width:min(100% - 30px,1080px)}}
   </style>
 </head>
 <body>
-  <header class="nav">
-    <div class="nav-inner">
-      <a class="brand" href="./" aria-label="TBO homepage">TBO</a>
-      <div class="menu-wrap">
-        <button class="menu-toggle" id="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="site-menu">
-          <span class="hamburger"><span></span><span></span><span></span></span>
-        </button>
-        <nav class="dropdown" id="site-menu" aria-label="Main navigation">
-          <a href="./ios/">iOS</a>
-          <a href="./android/">Android</a>
-          <div class="separator"></div>
-          <a href="./shop/">Shop</a>
-          <a href="#features">Features</a>
-          <a href="#faq">FAQ</a>
-          <div class="separator"></div>
-          <a href="https://discord.gg/deltax" target="_blank" rel="noopener noreferrer">Discord</a>
-          <a href="https://t.me/deltadyn" target="_blank" rel="noopener noreferrer">Telegram</a>
-        </nav>
-      </div>
+  <header class="navbar container">
+    <a class="brand" href="./" aria-label="TBO homepage">
+      <img src="./logohs.svg" alt="TBO" class="brand-logo">
+    </a>
+    <div class="menu-wrap">
+      <button class="menu-button" id="menu-button" aria-label="Open menu" aria-expanded="false" aria-controls="dropdown">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <nav class="dropdown" id="dropdown">
+        <a href="./ios/">iOS</a>
+        <a href="./android/">Android</a>
+        <div class="separator"></div>
+        <a href="./shop/">Shop</a>
+        <a href="#features">Features</a>
+        <a href="#faq">Frequently asked questions</a>
+        <div class="separator"></div>
+        <a href="https://discord.gg/deltax" target="_blank" rel="noopener noreferrer">Discord</a>
+        <a href="https://t.me/deltadyn" target="_blank" rel="noopener noreferrer">Telegram</a>
+      </nav>
     </div>
   </header>
 
   <main>
-    <section class="hero">
-      <div class="hero-content">
-        <span class="eyebrow"><span class="eyebrow-dot"></span> Simple. Free. Always keyless.</span>
-        <h1>More with <span class="gradient">TBO.</span></h1>
-        <p>A simple way to get started. No key system, no paid plans — just TBO.</p>
-        <div class="actions">
-          <a class="btn primary" id="download-button" href="./ios/">Download TBO <span aria-hidden="true">↗</span></a>
-          <a class="btn secondary" href="#features">Explore more <span aria-hidden="true">↓</span></a>
-        </div>
-        <p class="hero-note">Free to access · Supported by ads · No key system, ever</p>
+    <section class="hero container">
+      <span class="eyebrow">Simple. Free. Always keyless.</span>
+      <h1>More with <span class="gradient">TBO.</span></h1>
+      <p>A simple way to get started. No key system, no paid plans — just TBO.</p>
+      <div class="actions">
+        <a class="btn primary" id="download-button" href="./ios/">Download</a>
+        <a class="btn secondary" href="#features">Explore more <span aria-hidden="true">↓</span></a>
       </div>
+      <p class="hero-note">Free to access · Supported by ads · No key system, ever</p>
     </section>
 
-    <section class="section" id="features">
+    <section id="features" class="container">
       <div class="section-heading">
-        <h2>Made to keep things simple.</h2>
-        <p>Everything you need to get started, without unnecessary steps.</p>
+        <h2>Made to be simple.</h2>
+        <p>Everything you need to get started with TBO.</p>
       </div>
-      <div class="features">
+      <div class="feature-grid">
         <article class="feature">
-          <div class="feature-icon" aria-hidden="true">↻</div>
+          <div class="feature-icon">↻</div>
           <h3>Fast updates</h3>
-          <p>We aim to keep TBO updated and improve the experience over time.</p>
+          <p>Stay up to date with improvements and new releases.</p>
         </article>
         <article class="feature">
-          <div class="feature-icon" aria-hidden="true">◉</div>
+          <div class="feature-icon">◉</div>
           <h3>Community support</h3>
-          <p>Join our community to get help and stay up to date with announcements.</p>
+          <p>Connect with the community for updates and help.</p>
         </article>
         <article class="feature">
-          <div class="feature-icon" aria-hidden="true">♢</div>
+          <div class="feature-icon">♢</div>
           <h3>Security-minded</h3>
-          <p>We aim to make getting started clear and straightforward.</p>
+          <p>A straightforward experience with simplicity in mind.</p>
         </article>
       </div>
     </section>
 
-    <section class="section" aria-label="Our promise">
+    <section class="container">
       <div class="promise">
-        <div class="promise-icon" aria-hidden="true">✓</div>
         <div>
-          <div class="promise-label">Our promise</div>
-          <h3>Always keyless</h3>
-          <p><strong>No keys. No paid plans.</strong><br>TBO will never have a key system. There are no key checkpoints to complete and no keys to obtain. Ads are the only monetization method planned for TBO. There are no paid subscriptions or premium plans.</p>
+          <span class="label">Our promise</span>
+          <h2>Always keyless</h2>
+          <h3>No keys. No paid plans.</h3>
+          <p>TBO will never have a key system. There are no key checkpoints to complete and no keys to obtain. Ads are the only monetization method planned for TBO. There are no paid subscriptions or premium plans.</p>
         </div>
+        <div class="check" aria-hidden="true">✓</div>
       </div>
     </section>
 
-    <section class="cta" aria-label="Get started">
+    <section class="cta container">
       <h2>Ready to get started?</h2>
-      <div class="free">It's free!</div>
+      <h3>It's free!</h3>
       <p>TBO is free to use, and you can get started in just a few minutes. What are you waiting for?</p>
       <div class="actions">
         <a class="btn primary" id="ready-download-button" href="./ios/">Download TBO</a>
@@ -152,46 +144,47 @@
       </div>
     </section>
 
-    <section class="section" id="faq">
+    <section id="faq" class="container">
       <div class="section-heading">
         <h2>Frequently asked questions</h2>
-        <p>Quick answers to common questions about TBO.</p>
       </div>
       <div class="faq-list">
-        <details>
-          <summary>Is TBO free?</summary>
+        <article class="faq-item">
+          <h3>Is TBO free?</h3>
           <p>Yes. TBO is free to use. Ads are the only monetization method planned, with no paid subscriptions or premium plans.</p>
-        </details>
-        <details>
-          <summary>Does TBO have a key system?</summary>
+        </article>
+        <article class="faq-item">
+          <h3>Does TBO have a key system?</h3>
           <p>No. TBO will always be keyless, with no key checkpoints or keys to obtain.</p>
-        </details>
-        <details>
-          <summary>Where can I get TBO?</summary>
-          <p>Choose iOS or Android from the Download button or the navigation menu.</p>
-        </details>
-        <details>
-          <summary>Where can I get updates or help?</summary>
+        </article>
+        <article class="faq-item">
+          <h3>Where can I get TBO?</h3>
+          <p>Choose iOS or Android from the Download button or navigation menu.</p>
+        </article>
+        <article class="faq-item">
+          <h3>Where can I get updates or help?</h3>
           <p>Join the TBO Discord or Telegram community using the links in the menu.</p>
-        </details>
+        </article>
       </div>
     </section>
   </main>
 
+  <footer>
+    <div class="container">TBO</div>
+  </footer>
+
   <script>
-    const toggle = document.getElementById("menu-toggle");
-    const menu = document.getElementById("site-menu");
+    const menuButton = document.getElementById("menu-button");
+    const dropdown = document.getElementById("dropdown");
 
     function closeMenu() {
-      menu.classList.remove("open");
-      toggle.setAttribute("aria-expanded", "false");
-      toggle.setAttribute("aria-label", "Open menu");
+      dropdown.classList.remove("open");
+      menuButton.setAttribute("aria-expanded", "false");
     }
 
-    toggle.addEventListener("click", () => {
-      const isOpen = menu.classList.toggle("open");
-      toggle.setAttribute("aria-expanded", String(isOpen));
-      toggle.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
+    menuButton.addEventListener("click", () => {
+      const isOpen = dropdown.classList.toggle("open");
+      menuButton.setAttribute("aria-expanded", String(isOpen));
     });
 
     document.addEventListener("click", event => {
@@ -202,7 +195,9 @@
       if (event.key === "Escape") closeMenu();
     });
 
-    menu.querySelectorAll("a").forEach(link => link.addEventListener("click", closeMenu));
+    dropdown.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", closeMenu);
+    });
 
     const ua = navigator.userAgent || "";
     const platform = navigator.platform || "";
