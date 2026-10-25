@@ -1,22 +1,23 @@
-local passes, fails, undefined = 0, 0, 0
-local running = 0
+local outputFile = "openUNC_results.txt"
+local logBuffer = {}
 
--- ===== OUTPUT REDIRECT (write to file instead of printing) =====
-local output_buffer = {}
-local function _log(...)
-	local parts = {}
-	for i = 1, select("#", ...) do
-		parts[i] = tostring(select(i, ...))
-	end
-	output_buffer[#output_buffer + 1] = table.concat(parts, " ") .. "\n"
+local function log(...)
+    local parts = {}
+    for i, value in ipairs({...}) do
+        parts[i] = tostring(value)
+    end
+
+    table.insert(logBuffer, table.concat(parts, "\t"))
+    writefile(outputFile, table.concat(logBuffer, "\n") .. "\n")
 end
 
-local _env = getfenv(0)
-local _original_print = _env.print
-local _original_warn = _env.warn
-_env.print = _log
-_env.warn = _log
--- ===============================================================
+writefile(outputFile, "")
+
+local print = log
+local warn = log
+
+local passes, fails, undefined = 0, 0, 0
+local running = 0
 
 local function getGlobal(path)
 	local value = getfenv(0)
@@ -87,14 +88,6 @@ task.defer(function()
 	print("✅ Tested with a " .. rate .. "% success rate (" .. outOf .. ")")
 	print("⛔ " .. fails .. " tests failed")
 	print("⚠️ " .. undefined .. " globals are missing aliases")
-
-	-- ===== WRITE RESULTS TO FILE =====
-	local content = table.concat(output_buffer, "")
-	local ok, err = pcall(writefile, "openUNC_results.txt", content)
-	if not ok and _original_warn then
-		_original_warn("Failed to write openUNC_results.txt: " .. tostring(err))
-	end
-	-- =================================
 end)
 
 -- Cache
