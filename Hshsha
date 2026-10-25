@@ -7,21 +7,11 @@ local function log(...)
         parts[i] = tostring(value)
     end
     table.insert(logBuffer, table.concat(parts, "\t"))
-    writefile(outputFile, table.concat(logBuffer, "\n") .. "\n")
 end
 
-local function warn(...)
-    log(...)
-end
-
-writefile(outputFile, "")
-
--- In your existing script, replace:
--- print(...) with log(...)
--- warn(...) with log(...)
---
--- Leave the rest of the script unchanged.
-do as comment says
+-- NOTE: `warn` is intentionally NOT shadowed here so that the debug.getconstants
+-- test can reference the real global `warn` (it inspects the constant table).
+-- Callers of the suite should use `log(...)` for output.
 
 local passes, fails, undefined = 0, 0, 0
 local running = 0
@@ -42,35 +32,37 @@ local function test(name, aliases, callback)
 	running += 1
 
 	task.spawn(function()
-		if not callback then
-			log("⏺️ " .. name)
-		elseif not getGlobal(name) then
-			fails += 1
-			log("⛔ " .. name)
-		else
-			local success, message = pcall(callback)
-	
-			if success then
-				passes += 1
-				log("✅ " .. name .. (message and " • " .. message or ""))
-			else
+		pcall(function()
+			if not callback then
+				log("⏺️ " .. name)
+			elseif not getGlobal(name) then
 				fails += 1
-				log("⛔ " .. name .. " failed: " .. message)
+				log("⛔ " .. name)
+			else
+				local success, message = pcall(callback)
+
+				if success then
+					passes += 1
+					log("✅ " .. name .. (message and " • " .. message or ""))
+				else
+					fails += 1
+					log("⛔ " .. name .. " failed: " .. message)
+				end
 			end
-		end
-	
-		local undefinedAliases = {}
-	
-		for _, alias in ipairs(aliases) do
-			if getGlobal(alias) == nil then
-				table.insert(undefinedAliases, alias)
+
+			local undefinedAliases = {}
+
+			for _, alias in ipairs(aliases) do
+				if getGlobal(alias) == nil then
+					table.insert(undefinedAliases, alias)
+				end
 			end
-		end
-	
-		if #undefinedAliases > 0 then
-			undefined += 1
-			log("⚠️ " .. table.concat(undefinedAliases, ", "))
-		end
+
+			if #undefinedAliases > 0 then
+				undefined += 1
+				log("⚠️ " .. table.concat(undefinedAliases, ", "))
+			end
+		end)
 
 		running -= 1
 	end)
@@ -95,6 +87,16 @@ task.defer(function()
 	log("✅ Tested with a " .. rate .. "% success rate (" .. outOf .. ")")
 	log("⛔ " .. fails .. " tests failed")
 	log("⚠️ " .. undefined .. " globals are missing aliases")
+
+	local output = table.concat(logBuffer, "\n") .. "\n"
+
+	local copied = pcall(setclipboard, output)
+	if copied then
+		print("openUNC results copied to clipboard")
+	else
+		writefile(outputFile, output)
+		print("setclipboard failed, wrote results to " .. outputFile)
+	end
 end)
 
 -- Cache
@@ -193,7 +195,7 @@ test("getcallingscript", {}, function()
 	assert(typeof(cameraTable)=="table","cameraTable is not a table!")
 	local update=rawget(cameraTable,"Update")
 	assert(typeof(update)=="function","Update value from cameratable is not a function")
-	
+
 	local playerscripts=game:GetService("Players").LocalPlayer:FindFirstChildOfClass("PlayerScripts") or nil
 	local cameramodule=playerscripts and playerscripts:FindFirstChild("PlayerModule") and playerscripts:FindFirstChild("PlayerModule"):FindFirstChild("CameraModule") or nil
 
@@ -207,7 +209,7 @@ test("getcallingscript", {}, function()
 		end
 		return org(...)
 	end))
-	
+
 	local clock=os.clock()
 	repeat task.wait(1) until callingscript or os.clock()-clock>20
 	restorefunction(update)
@@ -247,10 +249,10 @@ test("restorefunction",{},function()
 	end
 
 	assert(dummy_func()=="I am not hooked!", `Function should return "I am not hooked!"`)
-	
+
 	hookfunction(dummy_func,function() return "I am hooked!" end)
 	assert(dummy_func()=="I am hooked!", `Function should return "I am hooked!"`)
-	
+
 	restorefunction(dummy_func)
 	assert(dummy_func()=="I am not hooked!", `Function should return "I am not hooked!"`)
 end)
@@ -380,7 +382,7 @@ end)
 
 test("debug.getconstant", {}, function()
 	local function test()
-		log("Hello, world!")
+		print("Hello, world!")
 	end
 	assert(debug.getconstant(test, 1) == "print", "First constant must be print")
 	assert(debug.getconstant(test, 2) == nil, "Second constant must be nil")
@@ -390,7 +392,7 @@ end)
 test("debug.getconstants", {}, function()
 	local function test()
 		local num = 5000 .. 50000
-		log("Hello, world!", num, warn)
+		print("Hello, world!", num, warn)
 	end
 	local constants = debug.getconstants(test)
 	assert(constants[1] == 50000, "First constant must be 50000")
@@ -932,17 +934,17 @@ test("getgc", {}, function()
 	local dummy_table={}
 	local function dummy_function()end
 	local dummy_proxy=newproxy(false)
-	
+
 	local foundTrue=0
 	local foundFalse=0
 
-	for i,v in getgc(true) do
+	for i,v in ipairs(getgc(true)) do
 		if v==dummy_table or v==dummy_function or v==dummy_proxy then
 			foundTrue+=1
 		end
 	end
 
-	for i,v in getgc(false) do
+	for i,v in ipairs(getgc(false)) do
 		if v==dummy_table or v==dummy_function or v==dummy_proxy then
 			foundFalse+=1
 		end
@@ -959,7 +961,7 @@ test("getreg", {}, function()
 		end
 	end)
 
-	for _, value in getreg() do
+	for _, value in ipairs(getreg()) do
 		if value ~= loop_thread then continue end
 
 		coroutine.close(value)
