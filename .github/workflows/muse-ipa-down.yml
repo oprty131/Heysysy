@@ -1,0 +1,208 @@
+name: Muse IPA Down
+
+env:
+  PYTHONIOENCODING: utf-8
+  APP_BUNDLE_ID: com.facebook.hatch
+
+permissions: write-all
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  download_ipa:
+    name: 'IPATool Operations'
+    runs-on: "windows-latest"
+    steps:
+      - name: Set up git repository
+        uses: actions/checkout@v5
+
+      - name: Setup ipatool-py
+        run: |
+          git clone -b itunes_server https://github.com/Yakov5776/ipatool-py
+          pip3 install -r ipatool-py/requirements.txt
+          pip3 install telethon==1.38.1
+          mkdir -p ipaDown
+        shell: bash
+
+      - name: Setup iTunes Header Service
+        uses: Yakov5776/actions-iTunes-header@master
+        with:
+          apple_id: ${{ secrets.APPLE_ID }}
+          apple_id_pwd: ${{ secrets.APPLE_ID_PWD }}
+
+      - name: Execute operation
+        id: operation
+        run: |
+            output=$(python3 ipatool-py/main.py --json lookup -b $APP_BUNDLE_ID -c US \
+                                                download -o ipaDown -s http://127.0.0.1:9000 )
+
+            echo "APP_NAME=$(echo "$output" | jq -r '.appName')" >> $GITHUB_ENV
+            echo "APP_BUNDLE_ID=$(echo "$output" | jq -r '.appBundleId')" >> $GITHUB_ENV
+            echo "APP_VER=$(echo "$output" | jq -r '.appVer')" >> $GITHUB_ENV
+            echo "APP_ID=$(echo "$output" | jq -r '.appId')" >> $GITHUB_ENV
+            echo "APP_VER_ID=$(echo "$output" | jq -r '.appVerId')" >> $GITHUB_ENV
+            echo "DOWNLOAD_URL=$(echo "$output" | jq -r '.downloadUrl')" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Check if version already released
+        id: version_check
+        run: |
+          tag_name="${APP_BUNDLE_ID}-${APP_ID}-${APP_VER_ID}"
+          echo "Checking for tag $tag_name"
+          if gh release view "$tag_name" > /dev/null 2>&1; then
+            echo "Release already exists."
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+
+      - name: Decode Telegram session
+        if: steps.version_check.outputs.exists == 'false'
+        env:
+          TELEGRAM_SESSION_B64: ${{ secrets.TELEGRAM_SESSION_B64 }}
+        run: |
+          [System.IO.File]::WriteAllBytes("session.session", [System.Convert]::FromBase64String($env:TELEGRAM_SESSION_B64))
+
+      - name: Fetch decrypted file
+        shell: bash
+        if: steps.version_check.outputs.exists == 'false'
+        env:
+          PYTHONUNBUFFERED: 1
+          TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
+          TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
+          TARGET_BOT_USERNAME: ${{ secrets.TARGET_BOT_USERNAME }}
+          APP_STORE_URL: 'https://apps.apple.com/us/app/muse-from-meta/id6760173601'
+        run: |
+          python <<'PYCODE'
+          import asyncio
+          import os
+          from telethon import TelegramClient, events
+
+          api_id = int(os.environ["TELEGRAM_API_ID"])
+          api_hash = os.environ["TELEGRAM_API_HASH"]
+          target_bot = os.environ["TARGET_BOT_USERNAME"]
+          app_store_url = os.environ["APP_STORE_URL"]
+
+          async def main():
+              client = TelegramClient("session", api_id, api_hash)
+              await client.start()
+              print("Logged in")
+              ipa_received = asyncio.Event()
+              ipa_downloaded = asyncio.Event()
+              new_downloaded_path = None
+
+              def callback(current, total):
+                  print('Downloaded', current, 'out of', total,
+                        'bytes: {:.2%}'.format(current / total))
+
+              @client.on(events.NewMessage(from_users=target_bot))
+              async def handler(event):
+                  nonlocal new_downloaded_path
+                  if event.file and event.file.name and event.file.name.endswith(".ipa"):
+                      ipa_received.set()
+                      downloaded_path = await event.download_media(progress_callback=callback)
+                      ipa_filename = downloaded_path.split("/")[-1]
+                      ipa_filename_cleaned = ipa_filename.rsplit('-', 1)[0]
+                      new_downloaded_path = os.path.join(os.path.dirname(downloaded_path), ipa_filename_cleaned + ".ipa")
+                      os.rename(downloaded_path, new_downloaded_path)
+                      print(f"✅ IPA file downloaded: {new_downloaded_path}")
+                      ipa_downloaded.set()
+
+              await client.send_message(target_bot, app_store_url)
+              print("Sent request, waiting for IPA...")
+
+              try:
+                  await asyncio.wait_for(ipa_received.wait(), timeout=120)
+                  print("✅ IPA received, downloading...")
+                  await asyncio.wait_for(ipa_downloaded.wait(), timeout=800)
+              except asyncio.TimeoutError:
+                print("❌ Timed out waiting for IPA response.")
+
+              await client.disconnect()
+
+              if new_downloaded_path:
+                  with open(os.environ["GITHUB_ENV"], "a") as f:
+                      f.write(f"IPA_FILE_PATH={new_downloaded_path}\n")
+
+          asyncio.run(main())
+          PYCODE
+
+      - name: Extract plists
+        if: steps.version_check.outputs.exists == 'false'
+        run: |
+          Set-Location "ipaDown"
+          $firstIpa = Get-ChildItem -Filter *.ipa | Select-Object -First 1
+          Expand-Archive -Path $firstIpa.FullName -DestinationPath "temp"
+          Copy-Item "temp\iTunesMetadata.plist" "..\iTunesMetadata.plist" -Force
+          $appBundle = Get-ChildItem "temp\Payload" -Directory -Filter *.app | Select-Object -First 1
+          Copy-Item "$($appBundle.FullName)\Info.plist" "..\Info.plist" -Force
+
+      - name: Pushing to release
+        if: steps.version_check.outputs.exists == 'false'
+        uses: ncipollo/release-action@v1.20.0
+        with:
+          name: "${{ env.APP_NAME }} - ${{ env.APP_VER }}"
+          body: >-
+            ${{ format(fromJSON('"appName: {0}\nappBundleId: {1}\nappVer: {2}\nappId: {3}\nappVerId: {4}\n"'), 
+                  env.APP_NAME, 
+                  env.APP_BUNDLE_ID, 
+                  env.APP_VER, 
+                  env.APP_ID, 
+                  env.APP_VER_ID
+                ) }}
+          commit: ${{ github.sha }}
+          tag: "${{ env.APP_BUNDLE_ID }}-${{ env.APP_ID }}-${{ env.APP_VER_ID }}"
+          artifacts: ${{ env.IPA_FILE_PATH }},iTunesMetadata.plist
+          allowUpdates: true
+          removeArtifacts: false
+          replacesArtifacts: false
+
+      - name: Extract metadata
+        if: steps.version_check.outputs.exists == 'false'
+        id: extract
+        run: |
+          $today = Get-Date -Format "MM/dd/yyyy"
+          echo "today=$today" >> $env:GITHUB_OUTPUT
+          [xml]$infoPlist = Get-Content "Info.plist"
+          $minOSVersion = $infoPlist.SelectSingleNode("//key[text()='MinimumOSVersion']/following-sibling::string[1]").'#text'
+          echo "MIN_OS_VERSION=$minOSVersion" >> $env:GITHUB_OUTPUT
+          $tag_name = "${{ env.APP_BUNDLE_ID }}-${{ env.APP_ID }}-${{ env.APP_VER_ID }}"
+          $artifact_url = "https://github.com/${{ github.repository }}/releases/download/${tag_name}/${{ env.IPA_FILE_PATH }}"
+          echo "artifact_url=$artifact_url" >> $env:GITHUB_OUTPUT
+
+      - name: Append to Google Sheets
+        id: 'update_worksheet'
+        uses: jroehl/gsheet.action@v2.1.1
+        if: steps.version_check.outputs.exists == 'false'
+        with:
+          spreadsheetId: ${{ secrets.GSHEET_ID }}
+          commands: |
+            [
+              {
+                "command": "appendData",
+                "args": {
+                  "worksheetTitle": "MUSE",
+                  "minCol": 1,
+                  "data": [
+                    [
+                      "${{ env.APP_VER }}",
+                      "${{ steps.extract.outputs.today }}",
+                      "Yes",
+                      "${{ env.APP_VER_ID }}",
+                      "iOS ${{ steps.extract.outputs.MIN_OS_VERSION }}",
+                      "",
+                      "${{ steps.extract.outputs.artifact_url }}"
+                    ]
+                  ]
+                }
+              }
+            ]
+        env:
+          GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
+          GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
